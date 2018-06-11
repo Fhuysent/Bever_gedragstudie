@@ -1,0 +1,28 @@
+---
+title: "Ophalen gegevens van grofwild uit BackOffice"
+output: html_document
+author: "Frank Huysentruyt"
+
+---
+
+## **1. Voorbereiding**
+
+### 1.1 Bibliotheken instellen
+
+```{r libraries inladen, include=FALSE}
+library(tidyr)
+```
+
+### 1.2 Gegevens ophalen
+
+De telemetriegegevens van bever zijn opgeslagen in csv files in de input/csv map.
+
+```{r gegevens inlezen}
+setwd("../Input/csv")
+fileNames <- Sys.glob("*.csv")
+data <- NULL
+for (fileName in fileNames) {
+  tmp <- read.csv2(fileName, header=TRUE, sep=,)
+  data <- rbind(data,tmp)
+}
+```

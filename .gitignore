@@ -37,3 +37,4 @@ rsconnect/
 
 # Unwanted folders
 /Input/
+.Rproj.user

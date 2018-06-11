@@ -1,6 +1,6 @@
 library(tidyr)
 
-setwd("Input/kml")
+setwd("../Input/kml")
 fileNames <- Sys.glob("*.kml")
 
 for (fileName in fileNames) {
