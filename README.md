@@ -10,6 +10,9 @@ Elke laag wordt afzonderlijk als .kml uit MyMaps gehaald en opgeslagen onder de 
 /Input/kml
 Daarbij krijgt elke file de naam: naambever.kml (vb. BE1002.kml)
 
+Input-map wordt niet op Git gesyncht, backup gegevens ook op:
+https://drive.google.com/drive/folders/1cBUVapK-zLDP5n15_9s4saxCSICYnHx9
+
 # Omzetten van gegevens
 
 De .kml files worden omgezet naar .csv files via het script
