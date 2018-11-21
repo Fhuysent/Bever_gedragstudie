@@ -30,4 +30,8 @@ for (fileName in fileNames) {
   write.csv2(Gegevens, file=sprintf('../csv/%s.csv', fileName), row.names = F)
 }
 
+    
+  
+
+
 

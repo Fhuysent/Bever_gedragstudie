@@ -1,4 +1,5 @@
 library(leaflet)
+library(raster)
 
 setwd("../Input/csv")
 fileNames <- Sys.glob("*.csv")
@@ -37,3 +38,21 @@ m <-leaflet(data=mapdata) %>%
                             as.character(uur)))
 library(mapview)
 mapshot(m, file = "kaartje_telemetrie.jpg")
+
+##maximale afstanden berekenen per beest
+x <- 0
+afstanden <- data.frame(bever=factor(levels(data$bever)),
+                        maxdist=as.numeric(rep("", length(levels(data$bever)))))
+for (i in levels(data$bever)){
+  tmp <- subset(data, bever==i)
+  for (j in 1:(nrow(tmp)-1)){
+    for (k in 1:(nrow(tmp)-j)){
+      y <- pointDistance(tmp[j,c("x","y")],tmp[j+k,c("x","y")], lonlat=T)
+      if(y>x){
+        x<-y
+      }
+    }
+  }
+afstanden$maxdist[afstanden$bever==i] <- x
+x <- 0
+}
