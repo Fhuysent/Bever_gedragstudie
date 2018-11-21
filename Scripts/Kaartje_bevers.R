@@ -8,15 +8,32 @@ for (fileName in fileNames) {
   data <- rbind(data,tmp)
 }
 
+#hieronder a6cee3 vervangen door kleuren
 BeverIcons <- iconList(
-  BE1001 = makeIcon("../../images/marker-icon-blue.png",15,15),
-  BE1002 = makeIcon("../../images/marker-icon-red.png",15,15),
-  BE1004 = makeIcon("../../images/marker-icon-green.png",15,15),
-  BE1006 = makeIcon("../../images/marker-icon-orange.png",15,15),
-  BE1008 = makeIcon("../../images/marker-icon-yellow.png",15,15),
-  BE1003 = makeIcon("../../images/marker-icon-violet.png",15,15))
+  BE1002 = makeIcon("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|a6cee3&chf=a,s,ee00FFFF",15,15),
+  BE1003 = makeIcon("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|1f78b4&chf=a,s,ee00FFFF",15,15),
+  BE1004 = makeIcon("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|b2df8a&chf=a,s,ee00FFFF",15,15),
+  BE1005 = makeIcon("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|33a02c&chf=a,s,ee00FFFF",15,15),
+  BE1006 = makeIcon("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|fb9a99&chf=a,s,ee00FFFF",15,15),
+  BE1007 = makeIcon("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|e31a1c&chf=a,s,ee00FFFF",15,15),
+  BE1008 = makeIcon("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|fdbf6f&chf=a,s,ee00FFFF",15,15),
+  BE1009 = makeIcon("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|ff7f00&chf=a,s,ee00FFFF",15,15),
+  BE1010 = makeIcon("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|cab2d6&chf=a,s,ee00FFFF",15,15),
+  BE1011 = makeIcon("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|6a3d9a&chf=a,s,ee00FFFF",15,15),
+  BE1013 = makeIcon("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|ffff99&chf=a,s,ee00FFFF",15,15))
 
+mapdata <- subset(data, bever!="BE1007" & 
+                    bever!="BE1011" & 
+                    bever!="BE1012" & 
+                    bever!="BE1014" & 
+                    bever!="BE1015" & 
+                    bever!="BE1016")
 
-leaflet(data=data) %>% 
+m <-leaflet(data=mapdata) %>% 
   addTiles() %>%
-  addMarkers(~x,~y, icon=~BeverIcons[bever], popup = ~as.character(datum), label = ~paste(as.character(datum), as.character(uur)))
+  addMarkers(~x,~y, icon=~BeverIcons[bever], 
+             popup = ~as.character(datum),
+             label = ~paste(as.character(datum),
+                            as.character(uur)))
+library(mapview)
+mapshot(m, file = "kaartje_telemetrie.jpg")
