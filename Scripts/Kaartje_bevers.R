@@ -1,7 +1,7 @@
 library(leaflet)
 library(raster)
 
-setwd("Input/csv")
+setwd("../Input/csv")
 fileNames <- Sys.glob("*.csv")
 data <- NULL
 for (fileName in fileNames) {

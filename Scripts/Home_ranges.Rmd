@@ -11,18 +11,88 @@ author: "Frank Huysentruyt"
 
 ```{r libraries inladen, include=FALSE}
 library(tidyr)
+library(adehabitatHR)
+library(leaflet)
 ```
 
 ### 1.2 Gegevens ophalen
 
-De telemetriegegevens van bever zijn opgeslagen in csv files in de input/csv map.
-
-```{r gegevens inlezen}
+```{r gegevens inlezen, include = FALSE}
 setwd("../Input/csv")
 fileNames <- Sys.glob("*.csv")
 data <- NULL
 for (fileName in fileNames) {
-  tmp <- read.csv2(fileName, header=TRUE, sep=,)
+  tmp <- read.csv2(fileName, header=TRUE)
   data <- rbind(data,tmp)
 }
 ```
+
+```{r}
+
+#Grids definieren
+BEL <- "+init=epsg:31370"
+WGS84 <- "+init=epsg:4326"
+
+##Data klaarzetten, id moet eerste kolom zijn
+data2 <- data[,c(5,1,2,3,4)]
+data2 <- subset(data2,bever %in% c("BE1002","BE1003","BE1005","BE1009","BE1013"))
+data2$bever <- factor(data2$bever)
+coordinates(data2) <- c("x","y")
+proj4string(data2) <- CRS(WGS84)
+data2 <- spTransform(data2, CRS(BEL))
+
+plot(data2, col=data2$bever)
+
+##95%MCP
+cp <- mcp(data2[,1], percent=95, unin = "m", unout = "ha")
+plot(cp)
+plot(data2, col=data2$bever, add=TRUE)
+
+mcp.area(data2[,1], percent=seq(50, 100, by = 5))
+##Ziet er goed uit
+##Oppervlakten
+as.data.frame(cp)
+
+##Kernel densities?
+kud <- kernelUD(data2[,1], h="href")
+kud
+image(kud)
+homerange <- getverticeshr(kud, unin = "m", unout = "ha", percent=95)
+plot(homerange, col=2:6)
+
+as.data.frame(homerange)
+ii <- kernel.area(kud, percent=seq(50,90,by=5))
+ii
+
+homerangeplot <- spTransform(homerange, CRS(WGS84))
+
+pal <- colorFactor(
+  palette = c('red', 'blue', 'green', 'purple', 'orange'),
+  domain = homerangeplot@data$id
+)
+
+leaflet()%>%
+  addTiles()%>%
+  addPolygons(data=homerangeplot, color=~pal(id))
+
+```
+```{r}
+uu <- clusthr(data2[,1])
+res <- LoCoH.k(data2[,1], k=30)
+#res <- LoCoH.r(data2[,1], r=1000)
+#res <- LoCoH.a(data2[,1], a=10000)
+homerange <- getverticeshr(res, unin = "m", unout = "ha", percent=95)
+homerange
+
+homerangeplot <- spTransform(homerange, CRS(WGS84))
+
+pal <- colorFactor(
+  palette = c('red', 'blue', 'green', 'purple', 'orange'),
+  domain = homerangeplot@data$id
+)
+
+leaflet()%>%
+  addTiles()%>%
+  addPolygons(data=homerangeplot, color=~pal(id))
+```
+
