@@ -79,7 +79,7 @@ mcp.area(data1003[,1], percent=seq(50, 100, by = 5))
 as.data.frame(cp)
 
 ##Kernel densities?
-kud <- kernelUD(data2[,1], h="href")
+kud <- kernelUD(data2[,1], h="href", grid=20, extent=0.2)
 kud
 image(kud)
 homerange <- getverticeshr(kud, unin = "m", unout = "ha", percent=95)
