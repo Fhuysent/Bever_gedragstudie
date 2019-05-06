@@ -56,27 +56,6 @@ mcp.area(data2[,1], percent=seq(50, 100, by = 5))
 ##Oppervlakten
 as.data.frame(cp)
 
-##1003Seizoen
-data1003 <- subset(data,bever=="BE1003")
-data1003$bever <- factor(data1003$bever)
-data1003$maand <- month(data1003$datum)
-data1003$bever2[data1003$maand<7] <- "BE1003voorjaar"
-data1003$bever2[data1003$maand>6] <- "BE1003najaar"
-data1003 <- data1003[,c(7,1,2,3,4)]
-data1003$bever2 <- factor(data1003$bever2)
-coordinates(data1003) <- c("x","y")
-proj4string(data1003) <- CRS(WGS84)
-data1003 <- spTransform(data1003, CRS(BEL))
-
-##95%MCP
-cp <- mcp(data1003[,1], percent=95, unin = "m", unout = "ha")
-plot(cp)
-plot(data1003, col=data1003$bever, add=TRUE)
-
-mcp.area(data1003[,1], percent=seq(50, 100, by = 5))
-##Ziet er goed uit
-##Oppervlakten
-as.data.frame(cp)
 
 ##Kaartje
 homerangeplot <- spTransform(cp, CRS(WGS84))
@@ -89,6 +68,9 @@ pal <- colorFactor(
 leaflet()%>%
   addTiles()%>%
   addPolygons(data=homerangeplot, color=~pal(id))
+
+
+
 
 ##Kernel densities?
 kud <- kernelUD(data2[,1], h="href", grid=20, extent=0.2)
