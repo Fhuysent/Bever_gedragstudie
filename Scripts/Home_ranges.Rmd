@@ -1,3 +1,4 @@
+Hallo Frank
 ---
 title: "Home Ranges van Bever""
 output: html_document
@@ -13,6 +14,8 @@ author: "Frank Huysentruyt"
 library(tidyr)
 library(adehabitatHR)
 library(leaflet)
+library(rgdal)
+library(lubridate)
 ```
 
 ### 1.2 Gegevens ophalen
@@ -53,6 +56,7 @@ mcp.area(data2[,1], percent=seq(50, 100, by = 5))
 ##Oppervlakten
 as.data.frame(cp)
 
+
 ##Kaartje
 homerangeplot <- spTransform(cp, CRS(WGS84))
 
@@ -66,17 +70,20 @@ leaflet()%>%
   addPolygons(data=homerangeplot, color=~pal(id))
 
 
+
+
 ##Kernel densities?
-kud <- kernelUD(data2[,1], h="href")
+kud <- kernelUD(data2[,1], h="href", grid=20, extent=0.2)
 kud
 image(kud)
 homerange <- getverticeshr(kud, unin = "m", unout = "ha", percent=95)
 plot(homerange, col=2:6)
 
 as.data.frame(homerange)
-ii <- kernel.area(kud, percent=seq(50,90,by=5))
+ii <- kernel.area(kud, percent=seq(50,95,by=5))
 ii
 
+###Kaartje
 homerangeplot <- spTransform(homerange, CRS(WGS84))
 
 pal <- colorFactor(
@@ -84,8 +91,8 @@ pal <- colorFactor(
   domain = homerangeplot@data$id
 )
 
-leaflet()%>%
-  addTiles()%>%
+leaflet() %>%
+  addTiles() %>%
   addPolygons(data=homerangeplot, color=~pal(id))
 
 ```
