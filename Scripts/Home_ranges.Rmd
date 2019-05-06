@@ -78,6 +78,18 @@ mcp.area(data1003[,1], percent=seq(50, 100, by = 5))
 ##Oppervlakten
 as.data.frame(cp)
 
+##Kaartje
+homerangeplot <- spTransform(cp, CRS(WGS84))
+
+pal <- colorFactor(
+  palette = c('red', 'blue', 'green', 'purple', 'orange'),
+  domain = homerangeplot@data$id
+)
+
+leaflet()%>%
+  addTiles()%>%
+  addPolygons(data=homerangeplot, color=~pal(id))
+
 ##Kernel densities?
 kud <- kernelUD(data2[,1], h="href", grid=20, extent=0.2)
 kud
@@ -89,6 +101,7 @@ as.data.frame(homerange)
 ii <- kernel.area(kud, percent=seq(50,95,by=5))
 ii
 
+###Kaartje
 homerangeplot <- spTransform(homerange, CRS(WGS84))
 
 pal <- colorFactor(
