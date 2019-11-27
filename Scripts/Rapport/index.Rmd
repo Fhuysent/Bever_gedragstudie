@@ -44,6 +44,7 @@ library(rgeos)
 library(geosphere)
 library(maptools)
 library(kableExtra)
+library(raster)
 #library(mapview)
 #library(raster)
 library(knitr)
@@ -77,200 +78,93 @@ if (!interactive() && opts_knit$get("rmarkdown.pandoc.to") != "html") {
 ```
 
 ```{r, data inlezen, include=FALSE}
-Ter_Select <- read_excel('../../../Input/beverterritoria_selectie.xlsx')
-Ter_ANB <- read_excel('../../../Input/beverterritoria_ANB.xlsx')
-Wrn_INBO_UA <- read_excel('../../../Input/waarnemingen_INBO_UA.xlsx')
-Wrn_NP <- read_excel('../../../Input/waarnemingen_Natuurpunt.xlsx')
+##gegevens importeren uit excel databank
+Bevers <- read_excel('input/Zenderdatabank.xlsx', sheet = "Vangstgegevens")
+Jongen <- read_excel('input/Zenderdatabank.xlsx', sheet = "Voortplanting")
+Burchten <- read_excel('input/Zenderdatabank.xlsx', sheet = "Burchten")
+Fotos <- read_excel('input/Zenderdatabank.xlsx', sheet = "Cameravalfotos")
+##gegevens uit naar csv omgezette kml files uit Mymaps samennemen in telemetriefile
+fileNames <- Sys.glob(file.path("input/csv","*.csv"))
+Telemetrie <- NULL
+for (fileName in fileNames) {
+  tmp <- read.csv2(fileName, header=TRUE)
+  Telemetrie <- rbind(Telemetrie,tmp)
+}
+##verwijder tijdelijke files
+remove(tmp,fileName,fileNames)
 ```
 
 ```{r, datacleaning, include=FALSE}
-Wrn_INBO_UA <- Wrn_INBO_UA %>%
-  mutate(inst = if_else(inventaris == "Lander Vanstaen", "UA", "INBO")) %>%
-  mutate(id = rownames(Wrn_INBO_UA))
-
 #Grids definieren
 BEL <- "+init=epsg:31370"
 WGS84 <- "+init=epsg:4326"
 
-#Overal gelijke coördinatensets toevoegen
-CoorANB <- data.frame(Ter_ANB[,5:6])
-coordinates(CoorANB) <- c("x","y")
-proj4string(CoorANB) <- CRS(BEL)
-CoorANB <- spTransform(CoorANB, CRS=CRS(WGS84))
-Ter_ANB$lon <- CoorANB@coords[,1]
-Ter_ANB$lat <- CoorANB@coords[,2]
-
-CoorSEL <- data.frame(Ter_Select[,3:4])
-coordinates(CoorSEL) <- c("x","y")
-proj4string(CoorSEL) <- CRS(BEL)
-CoorSEL <- spTransform(CoorSEL, CRS=CRS(WGS84))
-Ter_Select$lon <- CoorSEL@coords[,1]
-Ter_Select$lat <- CoorSEL@coords[,2]
-
-CoorWrn <- data.frame(Wrn_INBO_UA[,3:4])
-coordinates(CoorWrn) <- c("lon","lat")
-proj4string(CoorWrn) <- CRS(WGS84)
-CoorWrn <- spTransform(CoorWrn, CRS=CRS(BEL))
-Wrn_INBO_UA$x <- CoorWrn@coords[,1]
-Wrn_INBO_UA$y <- CoorWrn@coords[,2]
-
-remove(CoorANB,CoorSEL, CoorWrn)
+#dataformats
+#Bevers
+Bevers$Bever <- as.factor(Bevers$Bever)
+Bevers$Geslacht <- as.factor(Bevers$Geslacht)
+#Burchten
+Burchten$Burcht <- as.factor(Burchten$Burcht)
+Burchten$Bever <- as.factor(Burchten$Bever)
+#Fotos
+Fotos$Bever <- as.factor(Fotos$Bever)
+#Telemetrie
+Telemetrie$Bever <- as.factor(Telemetrie$Bever)
+Telemetrie$Date <- paste(Telemetrie$Datum," ",Telemetrie$Uur)
+Telemetrie$Datum <- strptime(Telemetrie$Date, format="%d/%m/%Y %H:%M:%S")
+Telemetrie$Uur <- NULL
 ```
 
-```{r overlay waarnemingen ANB territoria, include=FALSE}
-#Koppeling met ANB territoria 2017
-
-Buffer_ANB <- Ter_ANB
-coordinates(Buffer_ANB) <- c("x","y") 
-proj4string(Buffer_ANB) <- CRS(BEL)
-
-widthsmall <- 500
-buff <- gBuffer(Buffer_ANB, width=widthsmall, byid=TRUE)
-
-Coord_wrn <- Wrn_INBO_UA
-coordinates(Coord_wrn) <- c("x","y") 
-proj4string(Coord_wrn) <- CRS(BEL)
-
-Coord_wrn_buff <- Coord_wrn[buff,]
-
-o <- over(Coord_wrn_buff, buff)
-Coord_wrn_buff <- spCbind(Coord_wrn_buff, o)
-TerrData1 <- Coord_wrn_buff@data
-
-##We kijken of we de waarnemingen die aan geen enkele buffer zijn toegewezen op iets grotere schaal aan een nabijgelegen buffer kunnen toewijzen
-wrn_rest <- subset(Wrn_INBO_UA, !(id %in% TerrData1$id))
-
-widthlarge <- 1000
-buffgroot <- gBuffer(Buffer_ANB, width=widthlarge, byid=TRUE)
-
-Coord_wrn_rest <- wrn_rest
-coordinates(Coord_wrn_rest) <- c("x","y") 
-proj4string(Coord_wrn_rest) <- CRS(BEL)
-
-Coord_wrn_rest_buffgroot <- Coord_wrn_rest[buffgroot,]
-
-o <- over(Coord_wrn_rest_buffgroot, buffgroot)
-Coord_wrn_rest_buffgroot <- spCbind(Coord_wrn_rest_buffgroot, o)
-TerrData2 <- Coord_wrn_rest_buffgroot@data
-
-TerrData <- rbind(TerrData1,TerrData2)
-remove(o, buff, buffgroot, Coord_wrn, Coord_wrn_buff, Coord_wrn_rest, Coord_wrn_rest_buffgroot, wrn_rest)
-nrow(TerrData)==length(unique(TerrData$id))##geen dubbels
-
-length(unique(TerrData$terr_nr))
-LegeTerr <- TerrData %>%
-  filter(type_spoor=="NULL")
-length(unique(LegeTerr$terr_nr)) ##16 met een waarneming NULL, dus leeg
-VolleTerr <- TerrData %>%
-  filter(type_spoor!="NULL")
-length(unique(VolleTerr$terr_nr)) ##122 met waarnemingen, something's wrong
-setdiff(LegeTerr$terr_nr, VolleTerr$terr_nr)##dit zijn de echte nullen
-##Beter gewoon selecteren op waar er maar 1 waarneming is?
-##lukt ook niet want sommige hebben 2 keer NULL
-##We zetten alle NULL waarnemingen en twijfelgevallen op 0 en tellen op
-remove(VolleTerr,LegeTerr)
-
-wrn_per_terr <- TerrData %>%
-  dplyr::group_by(terr_nr, type_spoor) %>%
-  dplyr::summarize(aantal=length(lon)) %>%
-  mutate(aantal = ifelse(type_spoor=="NULL" | 
-                           type_spoor=="Twijfelgeval",0,aantal)) %>%
-  dplyr::group_by(terr_nr) %>%
-  dplyr::summarize(aantal=sum(aantal))
-
-##Territioria met een burchten zijn zeker bezet
-Terr_burcht <- TerrData %>%
-  filter(type_spoor=="Burcht") %>%
-  distinct(terr_nr) %>%
-  mutate(burcht=1)
-
-##Dammen liggen ook altijd in territoria
-Terr_dam <- TerrData %>%
-  filter(type_spoor=="Dam") %>%
-  distinct(terr_nr) %>%
-  mutate(dam=1)
-
-##Koppelen aantal waarnemingen aan territoria met een burcht  
-wrn_per_terr <- merge(wrn_per_terr, Terr_burcht, by="terr_nr", all.x=T)
-wrn_per_terr <- merge(wrn_per_terr, Terr_dam, by="terr_nr", all.x=T)
-wrn_per_terr$burcht[is.na(wrn_per_terr$burcht)] <- 0
-wrn_per_terr$dam[is.na(wrn_per_terr$dam)] <- 0
-
-remove(Terr_burcht, Terr_dam)
-##Best vanaf 4 sporen als bezet beschouwen, vanaf dan kunnen burchten en dammen voorkomen
-##Eest nog beperken tot de territoria gekend in 2016 (startjaar project, 2017 dient dan als controle voor een eventueel model)
-##Kolom toevoegen of territorium nog bezet is
-
-TerrDataTot <- merge(wrn_per_terr,Ter_ANB[,c("terr_nr","eerste_wrn","status","lon","lat")], by="terr_nr", all.x=TRUE) %>%
-  mutate(bezet=ifelse(aantal>3,1,0)) %>%
-  mutate(statusANB=ifelse(is.na(status),"leeg","bezet"))
-
-
-AnalyseData <- TerrDataTot %>%
-  filter(eerste_wrn!=2017)
-##Dit is onze dataset voor analyse
-##Nog afstanden toevoegen
-AnalyseData$terr_nr <- factor(AnalyseData$terr_nr)
-afstand <- expand.grid(terr_nr=levels(AnalyseData$terr_nr), dist=0)
-for (i in levels(AnalyseData$terr_nr)){
-  a <- (subset(AnalyseData, terr_nr==i))[,7:8]
-  dist <- 100000
-  jaar <- AnalyseData$eerste_wrn[AnalyseData$terr_nr==i]
-  rest <- subset(AnalyseData, terr_nr!=i & bezet==1 & eerste_wrn<jaar+1)
-  rest$terr_nr <- factor(rest$terr_nr)
-  for (j in levels(rest$terr_nr)){
-    b <- (subset(rest, terr_nr==j))[,7:8]
-    x <- round(as.numeric(distm(a,b)))
-    dist <- ifelse(x<dist, x, dist)
+```{r, afstanden, include=FALSE}
+##maximale afstanden berekenen per beest
+x <- 0
+Afstanden <- data.frame(Bever=factor(levels(Telemetrie$Bever)),
+                        maxdist=as.numeric(rep("", length(levels(Telemetrie$Bever)))))
+for (i in levels(Telemetrie$Bever)){
+  tmp <- subset(Telemetrie, Bever==i)
+  for (j in 1:(nrow(tmp)-1)){
+    for (k in 1:(nrow(tmp)-j)){
+      y <- pointDistance(tmp[j,c("lon","lat")],tmp[j+k,c("lon","lat")], lonlat=T)
+      if(y>x){
+        x<-y
+      }
+    }
   }
-  afstand$dist[afstand$terr_nr==i] <- dist / 1000
+Afstanden$maxdist[Afstanden$Bever==i] <- x
+x <- 0
 }
-TerrDataTot2 <- merge(AnalyseData,afstand, by="terr_nr", all.x=TRUE)
+
+##verwijder tijdelijke files
+remove(i,j,k,x,y)
 ```
 
 # {-}
 
 # Dankwoord {-}
 
-Dit onderzoek werd uitgevoerd in opdracht van en gefinancierd door het Agentschap voor Natuur en Bos. We willen hierbij uitdrukkelijk de begeleidende stuurgroepleden Gert Van Hoydonck van het Agentschap voor Natuur en Bos en Maarten Van Aert van de Vlaamse Milieumaatschappij bedanken voor hun waardevolle bijdrage aan het tot stand komen van dit rapport. Verder verdienen zeker ook Lander Vanstaen, masterstudent Biologie aan de Universiteit Antwerpen, en zijn promotor Prof. Dr. Herwig Leirs, een bijzonder woord van dank. Het koppelen van de gegevens uit het vele veldwerk dat Lander voor zijn thesisonderzoek uitvoerde met onze gegevens gaf ons de gelegenheid een zeer uitgebreide analyse uit te voeren. Het duidelijke resultaat van dit onderzoek is dan ook zeker mee hun verdienste.
+Tekst.
 
 # Voorwoord {-}
 
-Vlaanderen kent de laatste jaren een opvallende terugkeer en toename van een aantal grote zoogdiersoorten. Hoefdieren als ree en everzwijn zijn er volop aanwezig en hun aantallen en areaal nemen nog jaarlijks toe. Maar ook carnivorensoorten als vos, das, steen- en boommarter tonen sterk groeiende populaties en sinds korte tijd behoren ook otter en wolf opnieuw met zekerheid tot de Vlaamse zoogdierenfauna. Ook de terugkeer van de bever, Europa's grootste knaagdier, kadert binnen deze trend. 
-Alhoewel de bever sinds 2000 terug in Vlaanderen voorkomt en intussen sterk in aantal is toegenomen, bevindt de populatie zich nog in volle expansie en neemt het areaal nog jaarlijks toe. Dit gebeurt in een versnipperd landschap waar bebouwing, landbouw en natuur- en waterbeheer weliswaar voor voldoende geschikt habitat zorgen, maar dat anderzijds potentiële conflicten genereert.
-Het evenwicht vinden tussen het beheersen van deze conflicten en het waarborgen van een gezonde populatie van een dergelijke waardevolle soort, vergt een weloverwogen aanpak. In die context zijn langdurige kwaliteitsvolle gegevens onontbeerlijk. 
-Deze studie, uitgevoerd in opdracht van het Agentschap voor Natuur en Bos, evalueert de huidige gegevens rond populatie-ontwikkeling van bever in Vlaanderen. Op deze manier wordt een wetenschappelijk onderbouwd kader gecreëerd waarbinnen beheerbeslissingen kunnen worden genomen die zowel de toekomst van de bever in Vlaanderen als het draagvlak voor zijn aanwezigheid ten goede zullen komen. 
+Tekst. 
 
 
 # Samenvatting {-}
 
-Sinds 2000 komt de Europese bever opnieuw voor in Vlaanderen en geniet die er als Europese Habitatrichtlijnsoort bescherming. Om die bescherming te garanderen kwam er een Vlaams soortbeschermingsprogramma met een populatiegrootte van 100 reproductieve eenheden als een gunstige staat van instandhouding voor de soort. Omdat bevers echter ook potentiële conflicten met zich meebrengen, werden binnen dit kader ook beheermogelijkheden opgenomen. Uiteraard geldt hierbij de voorwaarde dat de gunstige staat van instandhouding gegarandeerd blijft. Om dit te kunnen verifiëren zijn langdurige en kwaliteitsvolle monitoringgegevens nodig.
+Tekst
 
-Momenteel wordt de evolutie van de populatiegrootte in Vlaanderen opgevolgd via een monitoring van het aantal bezette territoria. Omdat niet elk territorium door een koppel dat jongen kan voortbrengen wordt bezet, wordt verondersteld dat een 167-tal bezette territoria overeenkomt met 100 reproductieve eenheden. Deze studie evalueert de correctheid van de huidige monitoringgegevens en van de vertaling ervan naar de evaluatie van de gunstige staat van instandhouding.
-
-Een  vergelijking tussen de veronderstelde toestand van bezetting en de geobserveerde bezetting in 100 van 128 territoria gekend op 1 januari 2017, toont aan dat deze gegevens voor 82 % accuraat zijn. Bijkomende analyses tonen daarbij dat de bezettingskans van een territorium mee wordt bepaald door de afstand tot andere bezette territoria. Meer nog dan de accuraatheid, die ook rekening houdt met het correct inschatten van afwezigheid, was in deze evaluatie vooral de precisie, of de mate waarin aanwezigheid correct werd ingeschat, van belang. Ook hier vonden we een hoge waarde en was de veronderstelde bezetting voor 91 % correct, wat resulteert in een mogelijke overschatting van slechts 9 %. Verder rekening houdend met de onzekerheid op deze waarde, kan worden gesteld dat het aantal effectief bezette territoria met 95 % zekerheid hoger ligt dan 85 % van het aantal verondersteld bezette territoria.
-
-**Dit resulteert in een makkelijk hanteerbare stelregel dat wanneer onder het huidige monitoringprotocol het aantal veronderstelde bezette territoria met een factor 0.85 wordt vermenigvuldigd er een verwaarloosbare kans op overschatting is.** Daar komt bij dat de onderliggende aannames die het aantal territoria naar populatiegrootte en aantal reproductieve eenheden moeten vertalen, in die mate conservatief zijn opgesteld dat ook daar de kans op overschatting minimaal is. Om de precisie van de monitoring toch nog verder te verhogen, kan er wel nog voor worden gekozen om nieuwe, geïsoleerd gelegen territoria pas als bezet te beschouwen wanneer bezetting minstens twee jaar op rij kan worden vastgesteld. Dit verlaagt de kans dat een te hoog aandeel territoria dat door eenlingen wordt bezet in de gegevens worden opgenomen. Niet alleen hebben dergelijke territoria een verhoogde kans om opnieuw onbezet te raken, een te hoog aandeel ervan in de gegevens zou ook voor een te grote afwijking tussen het veronderstelde en het effectieve aandeel reproductieve eenheden per territorium kunnen leiden.
+**Vette tekst.**
 
 # Aanbevelingen voor beheer en/of beleid {-}
 
--	De huidige populatiemonitoring van bever in Vlaanderen gebeurt zeer accuraat en kan  verder worden toegepast.
--	De monitoring is beter in het bepalen van aanwezigheid van bevers in een territorium dan in het bepalen van afwezigheid in vroeger bezette territoria. Om vooral overschatting van de populatie te vermijden, is het aangeraden de monitoringgegevens als een _'presence only'_ dataset te beschouwen. Daarbij wordt voor het schatten van de situatie voor Vlaanderen enkel rekening gehouden met bevestigd bezette territoria en wordt geen informatieve waarde gegeven aan territoria die ooit bezet waren maar waarin bezetting niet langer werd bevestigd. 
--	Omdat geïsoleerd gelegen territoria een grotere kans hebben om terug onbezet te raken, worden dergelijke nieuwe territoria bij voorkeur pas na twee opeenvolgende jaren van bezetting in de dataset opgenomen. Een afstand groter dan 10 km tot een nabijgelegen bezet territorium kan hierbij als grens worden genomen, maar het lijkt meer aangewezen om geval per geval de mate van isolatie in te schatten. 
--	Bij het gebruik van 85 % van het aantal verondersteld bezette territoria als maat voor de populatiegrootte, wordt de kans op overschatting verwaarloosbaar (< 5 %). 
--	De aannames in de omrekening van het aantal bezette territoria naar het aantal reproductieve eenheden zijn in die mate conservatief dat de kans op overschatting ook daar minimaal is. Die aannames kunnen dus worden behouden.
+-	Tekstpunt 1
+-	Tekstpunt 2 _'cursieve tekst'_ 
 
 # English abstract {-}
 
 \benglish
 
-The European beaver has recolonized Flanders since 2000 and, as a European Habitats Directive species, is protected throughout the region. To warrant this, a regional species protection program has been drawn up, which has set a threshold of 100 reproductive units as a favorable conservation status for the species in Flanders. Since the presence of beavers can also result in potential conflict, the program also offers possibilities for management, provided this not jeopardize the favorable conservation status. To enable verification of this condition, long-term and high-quality monitoring data are required.
-
-The evolution of the beaver population size in Flanders is currently monitored using the number of occupied territories as a proxy, assuming that 167 territories correspond to 100 reproductive units. This study evaluates the correctness of the current monitoring data and its repercussions for the evaluation of the favorable conservation status.
-
-A comparison between the assumed and observed occupancies in 100 of 128 territories known on January 1st 2017, showed an accuracy of 82 %. Additional analyses further show that the occupancy chance of a territory is determined by its distance to the nearest occupied neighboring territory. More important than accuracy, which evaluates both presence and absence data, was the evaluation of precision (the accuracy of presence only data). This value was 91 % correct, which limits potential overestimation of occupancy to 9 %. Taking into account the level of uncertainty of this precision, the actual number of territories occupied has a 95 % probability of surpassing 85 % of the number of occupied territories assumed.
-
-**This results in a rule of thumb that, when the number of assumed occupied territories is multiplied by 0.85, there is a negligible chance of overestimation.** In addition, the underlying assumptions that define the relation between the number of territories, the population size and the number of reproductive units are sufficiently conservative so that the likelihood of overestimation is also minimal. In order to increase the precision of the monitoring even further, the choice can be made to consider new, isolated territories as occupied only when occupation can be established for at least two years in a row. This reduces the chance that a too high proportion of territories occupied by loners will be included in the data. Not only do such territories have an increased chance of becoming vacant again, a too high share of such territories in the dataset could also lead to an excessive discrepancy between the assumed and the effective proportion of reproductive units per territory.
+English text.
 
 \eenglish
 
@@ -280,25 +174,8 @@ A comparison between the assumed and observed occupancies in 100 of 128 territor
 
 ##Algemeen kader
 
-De Europese bever, _Castor fiber_ (hierna _bever_), hoewel ooit een algemene en wijd verspreide soort, verdween door intensieve bejaging en habitatverlies in het midden van de 19^e^ eeuw uit Vlaanderen en grote delen van Europa [@Vanwijngaarden1966; @Nolet1988]. Vanaf de 20^e^ eeuw werden in verschillende landen herintroductieprojecten opgezet en werd de soort in toenemende mate beschermd. Hierdoor is het aantal bevers in Europa in de laatste decades enorm toegenomen en heeft de soort terug een gunstige IUCN status (_population increasing, least concern_) ([IUCN, 2019](https://www.iucnredlist.org/species/4007/115067136)).
+De Europese bever, _Castor fiber_ (hierna _bever_), ...tekst.
 
-Sinds begin 2000 is de bever ook terug in Vlaanderen aanwezig, daarbij opgesplitst in twee grote deelpopulaties. De eerste populatie situeert zich in het Maasbekken en is het resultaat van natuurlijke areaaluitbreiding via de Maas vanuit zowel Nederland als Wallonië. Een tweede populatie is het gevolg van enkele illegale uitzettingen in de Dijlevallei, aan zowel Vlaamse als Waalse zijde, in combinatie met bijkomende migratie vanuit het Maasbekken. De Vlaamse populatie werd in 2013 geschat op 150 – 200 dieren [@ANB2015].
 
-De bever is een Natura 2000-Habitatrichtlijnsoort die een strenge bescherming geniet. In recente jaren heeft de Vlaamse populatie blijk gegeven van goed herstel waarbij kan worden verondersteld dat de populatie binnen afzienbare tijd een goede staat van instandhouding zal bereiken. Wel is het leefgebied van de soort in vergelijking met de historische context sterk gewijzigd. Bebouwing, landbouw en natuur- en waterbeheer zorgen weliswaar voor een landschap met voldoende geschikt habitat voor een aanzienlijke beverpopulatie maar dat tegelijk potentiële conflicten met zich meebrengt. Naast de positieve effecten op fauna en flora, kan de bever immers ook voor overlast zorgen in de vorm van drainageproblemen en wateroverlast, schade aan bomen en gewassen, en graafschade aan oevers en dijken. Een geïntegreerde aanpak, die rekening houdt met de verbetering van de natuurkwaliteit door de bever, het risico op schade en met eventuele economische voordelen, is de beste benadering om de populatie duurzaam te laten ontwikkelen en in stand te houden [@ANB2015]. In dit kader zou het wenselijk zijn om bevers te kunnen verplaatsen van locaties met potentiële risico’s naar meer geschikt habitat en zo het populatieherstel van de bever te vrijwaren en tegelijk de negatieve gevolgen te beperken [@ANB2015]. Om beheermaatregelen mogelijk te maken voorziet het “Besluit van de Vlaamse Regering met betrekking tot soortenbescherming en soortenbeheer van 15 mei 2009” (hierna _Soortenbesluit_) in de opmaak van een specifiek soortbeschermingsprogramma (hierna _SBP_).
-
-Het SBP bever trad in voege op 5 augustus 2015 en loopt in zijn huidige vorm tot 5 augustus 2020. Dit SBP bevat ook een monitoringsprogramma, waarbij de evolutie van de verspreiding en de populatiegrootte van de bever wordt opgevolgd. Er werd in dit kader geopteerd om het aantal territoria als maat voor de eigenlijke populatiegrootte te gebruiken. Dit rapport vormt een onderdeel van de eindevaluatie van het huidig programma, op basis waarvan de afweging wordt gemaakt of een verlenging van het programma aangewezen is. 
-
-De inschatting van de populatiegrootte via bovenvermeld monitoringsprogramma moet gebeuren binnen een aanvaardbare foutenmarge omdat deze parameter ook wordt gebruikt om de gunstige staat van instandhouding van de soort in Vlaanderen te toetsen. Van zodra de soort zich in een gunstige staat van instandhouding bevindt, bestaat de mogelijkheid om de populatie in Vlaanderen actief te gaan beheren. Omdat dit beheer niet mag interfereren met de staat van instandhouding en gelet op de maatschappelijke gevoeligheid ervan, moet er extra aandacht besteed worden aan de correctheid van deze monitoring. 
-
-De staat van instandhouding van Habitatrichtlijnsoorten moet elke zes jaar aan de Europese Unie worden gerapporteerd. De volgende rapportage zal in 2019 gebeuren en beslaat de periode 2013-2018. 
-In het kader van deze rapportering en het mogelijk bereiken van een gunstige staat van instandhouding van bever in Vlaanderen, werd aan het Instituut voor Natuur- en Bosonderzoek (hierna _INBO_) eind 2017 de opdracht gegeven om het huidige monitoringprogramma te evalueren.
-
-##Staat van instandhouding
-
-Op basis van de elementen opgenomen in de verschillende instandhoudingsdoelstellingen, advies van het INBO [@Stuyck2012] en andere literatuurbronnen, werd voor Vlaanderen, als deelpopulatie van een grotere metapopulatie, een aantal van **100 reproductieve eenheden** als voldoende beschouwd om te kunnen spreken van een gunstige staat van instandhouding [@ANB2015].
-
-Omdat het aantal individuele bevers moeilijker te schatten is dan het aantal territoria, werd gekozen voor een monitoring van deze laatste als maat voor de populatiegrootte. Bevindingen uit Nederland en Zwitserland leren dat 100 reproductieve eenheden naar schatting met een 167-tal territoria overeenkomt, omdat 40 % van de territoria bezet blijkt door slechts één bever [@Niewold2012] en dus niet onder de noemer reproductieve eenheid valt. Dit komt neer op een 467-tal bevers (100 families van 4, 67 solitaire bevers) een aantal dat voldoende genetische robuustheid zou moeten garanderen [@ANB2015].
-
-Doel van deze evaluatie zal er dus niet enkel in bestaan na te gaan in welke mate de huidige monitoring het aantal bezette territoria correct inschat maar ook in welke mate de fouten die ermee gepaard gaan zich doorvertalen in een foutieve inschatting van het aantal reproductieve eenheden dan wel het aantal bevers in totaal.
 
 
