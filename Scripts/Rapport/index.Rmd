@@ -111,6 +111,9 @@ Burchten$Burcht <- as.factor(Burchten$Burcht)
 Burchten$Bever <- as.factor(Burchten$Bever)
 #Fotos
 Fotos$Bever <- as.factor(Fotos$Bever)
+Fotos$Datum <- paste(Fotos$Datum," ",substr(Fotos$Uur,12,19))
+Fotos$Datum <- strptime(Fotos$Datum, format="%Y-%m-%d %H:%M:%S")
+Fotos$Uur <- NULL
 #Inventarisaties
 InventApril$Type <- as.factor(InventApril$Type)
 InventAug$Type <- as.factor(InventAug$Type)
@@ -119,6 +122,9 @@ Telemetrie$Bever <- as.factor(Telemetrie$Bever)
 Telemetrie$Date <- paste(Telemetrie$Datum," ",Telemetrie$Uur)
 Telemetrie$Datum <- strptime(Telemetrie$Date, format="%d/%m/%Y %H:%M:%S")
 Telemetrie$Uur <- NULL
+#Alle waarnemingen samen
+Waarnemingen <- rbind(Telemetrie[,c(4,1,3,2)],Fotos)
+Waarnemingen$Datumkort <- as.Date(Waarnemingen$Datum, format="%d/%m/%Y")
 ##Dataset met enkel gezenderde bevers
 Zenderbevers <- Bevers %>% 
   filter(!is.na(Frequentie)) %>% 
@@ -128,10 +134,10 @@ Zenderbevers <- Bevers %>%
 ```{r, afstanden, include=FALSE}
 ##maximale afstanden berekenen per beest
 x <- 0
-Afstanden <- data.frame(Bever=factor(levels(Telemetrie$Bever)),
-                        maxdist=as.numeric(rep("", length(levels(Telemetrie$Bever)))))
-for (i in levels(Telemetrie$Bever)){
-  tmp <- subset(Telemetrie, Bever==i)
+Afstanden <- data.frame(Bever=factor(levels(Waarnemingen$Bever)),
+                        maxdist=as.numeric(rep("", length(levels(Waarnemingen$Bever)))))
+for (i in levels(Waarnemingen$Bever)){
+  tmp <- subset(Waarnemingen, Bever==i)
   for (j in 1:(nrow(tmp)-1)){
     for (k in 1:(nrow(tmp)-j)){
       y <- pointDistance(tmp[j,c("lon","lat")],tmp[j+k,c("lon","lat")], lonlat=T)

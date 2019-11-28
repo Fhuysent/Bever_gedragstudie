@@ -34,7 +34,7 @@ pal <- colorFactor(
 ```{r kaartaugustus, fig.cap="Waargenomen sporen tijdens oeverinspectie op 30 augustus 2017.", echo=FALSE}
 leaflet(data=InventAug) %>% 
   addTiles() %>%
-  addCircleMarkers(~lon,~lat, color=~pal(Type), stroke = F, radius=5, fillOpacity = 0.8) %>%
+  addCircleMarkers(~lon,~lat, color=~pal(Type), stroke = F, radius=10, fillOpacity = 0.8) %>%
   addLegend("bottomright", pal = pal, values = ~Type,
     title = "Spoortypes",
     opacity = 1)
@@ -45,12 +45,23 @@ leaflet(data=InventAug) %>%
 tabel \@ref(tab:tabZenderbevers).
 
 ```{r tabZenderbevers, echo=FALSE}
-Zenderbevers %>%
+Laatste <- Waarnemingen[,-c(2)] %>% 
   group_by(Bever) %>%
-  summarise(start = min(Vangstdatum), eind = max(Einddatum))
-kable(
-  booktabs = TRUE,
-  caption= "Overzicht dataverzameling gezenderde bevers."
+  summarise(Laatste = max(Datumkort, na.rm=T)) %>% 
+  mutate(Laatste = as.Date(Laatste, format="%d/%m/%Y")) 
+Zendertabel <- merge(Zenderbevers[,c(1,9,20)],Laatste, by="Bever")
+Zendertabel$Einddatum <- as.Date(Zendertabel$Einddatum, format="%d/%m/%Y")
+Zendertabel$Vangstdatum <- as.Date(Zendertabel$Vangstdatum, format="%d/%m/%Y")
+Zendertabel <- Zendertabel %>% 
+  mutate(tijd = ifelse(is.na(Einddatum),Laatste-Vangstdatum, Einddatum-Vangstdatum))
+Zendertabel2 <- Zendertabel %>%
+  group_by(Bever) %>%
+  summarise(Start = min(Vangstdatum), Laatste = max(Laatste), dagen = sum(tijd))
+Zendertabel <- merge(Zendertabel2, Afstanden, by="Bever") %>% 
+  mutate(Afstand = round(maxdist/1000, digits=2))
+kable(Zendertabel[,-c(5)],
+  caption = "Overzicht dataverzameling gezenderde bevers.",
+  col.names = c("Bever", "Startdatum", "Laatste datum","Tijd","Max. afstand")
  )
 ```
 
