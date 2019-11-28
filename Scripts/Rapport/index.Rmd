@@ -78,11 +78,14 @@ if (!interactive() && opts_knit$get("rmarkdown.pandoc.to") != "html") {
 ```
 
 ```{r, data inlezen, include=FALSE}
-##gegevens importeren uit excel databank
+##gegevens importeren uit excel databank telemetrie
 Bevers <- read_excel('input/Zenderdatabank.xlsx', sheet = "Vangstgegevens")
 Jongen <- read_excel('input/Zenderdatabank.xlsx', sheet = "Voortplanting")
 Burchten <- read_excel('input/Zenderdatabank.xlsx', sheet = "Burchten")
 Fotos <- read_excel('input/Zenderdatabank.xlsx', sheet = "Cameravalfotos")
+##gegevens inventarisatierondes 2017
+InventApril <- read_excel('input/Inventarisaties.xlsx', sheet = "April")
+InventAug <- read_excel('input/Inventarisaties.xlsx', sheet = "Augustus")
 ##gegevens uit naar csv omgezette kml files uit Mymaps samennemen in telemetriefile
 fileNames <- Sys.glob(file.path("input/csv","*.csv"))
 Telemetrie <- NULL
@@ -108,11 +111,18 @@ Burchten$Burcht <- as.factor(Burchten$Burcht)
 Burchten$Bever <- as.factor(Burchten$Bever)
 #Fotos
 Fotos$Bever <- as.factor(Fotos$Bever)
+#Inventarisaties
+InventApril$Type <- as.factor(InventApril$Type)
+InventAug$Type <- as.factor(InventAug$Type)
 #Telemetrie
 Telemetrie$Bever <- as.factor(Telemetrie$Bever)
 Telemetrie$Date <- paste(Telemetrie$Datum," ",Telemetrie$Uur)
 Telemetrie$Datum <- strptime(Telemetrie$Date, format="%d/%m/%Y %H:%M:%S")
 Telemetrie$Uur <- NULL
+##Dataset met enkel gezenderde bevers
+Zenderbevers <- Bevers %>% 
+  filter(!is.na(Frequentie)) %>% 
+  droplevels()
 ```
 
 ```{r, afstanden, include=FALSE}
@@ -175,7 +185,3 @@ English text.
 ##Algemeen kader
 
 De Europese bever, _Castor fiber_ (hierna _bever_), ...tekst.
-
-
-
-

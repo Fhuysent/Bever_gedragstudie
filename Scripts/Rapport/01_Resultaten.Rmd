@@ -1,0 +1,60 @@
+#Resultaten
+
+##Inventarisatie
+
+kaart april
+(Fig. \@ref(fig:kaartapril))
+
+```{r, kaartkleurenapril, include=FALSE}
+pal <- colorFactor(
+  palette = c('green','red','blue'),
+  domain = InventApril$Type
+)
+```
+
+```{r kaartapril, fig.cap="Waargenomen sporen tijdens oeverinspectie op 17 april 2017.", echo=FALSE}
+leaflet(data=InventApril) %>% 
+  addTiles() %>%
+  addCircleMarkers(~lon,~lat, color=~pal(Type), stroke = F, radius=5, fillOpacity = 0.8) %>%
+  addLegend("bottomright", pal = pal, values = ~Type,
+    title = "Spoortypes",
+    opacity = 1)
+```
+
+kaart augustus
+(Fig. \@ref(fig:kaartaugustus))
+
+```{r, kaartkleurenaugustus, include=FALSE}
+pal <- colorFactor(
+  palette = c('green','red','blue'),
+  domain = InventAug$Type
+)
+```
+
+```{r kaartaugustus, fig.cap="Waargenomen sporen tijdens oeverinspectie op 30 augustus 2017.", echo=FALSE}
+leaflet(data=InventAug) %>% 
+  addTiles() %>%
+  addCircleMarkers(~lon,~lat, color=~pal(Type), stroke = F, radius=5, fillOpacity = 0.8) %>%
+  addLegend("bottomright", pal = pal, values = ~Type,
+    title = "Spoortypes",
+    opacity = 1)
+```
+
+##Telemetrie
+
+tabel \@ref(tab:tabZenderbevers).
+
+```{r tabZenderbevers, echo=FALSE}
+Zenderbevers %>%
+  group_by(Bever) %>%
+  summarise(start = min(Vangstdatum), eind = max(Einddatum))
+kable(
+  booktabs = TRUE,
+  caption= "Overzicht dataverzameling gezenderde bevers."
+ )
+```
+
+tekst 
+
+
+##Analyse {#analyse}
