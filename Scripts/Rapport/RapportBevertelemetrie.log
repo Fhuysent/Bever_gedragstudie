@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.14159265-2.6-0.99999 (TeX Live 2018/W32TeX) (preloaded format=xelatex 2019.4.24)  28 NOV 2019 16:19
+This is XeTeX, Version 3.14159265-2.6-0.99999 (TeX Live 2018/W32TeX) (preloaded format=xelatex 2019.4.24)  11 DEC 2019 16:40
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1454,13 +1454,27 @@ Hoofdstuk 1.
 [9
 
 
-]
+] [10]
 Hoofdstuk 2.
-File: Staartzender.jpg Graphic file (type bmp)
-<Staartzender.jpg>
-[10
+Font mapping `tex-ansi.tec' for font `[Inconsolatazi4-Regular.otf]/OT:script=la
+tn;language=DFLT;mapping=tex-ansi;' not found.
+File: afbeeldingen/Bevervangst.jpg Graphic file (type bmp)
+<afbeeldingen/Bevervangst.jpg>
 
-] [11]
+Overfull \hbox (55.24272pt too wide) in paragraph at lines 263--264
+ [][] 
+ []
+
+[11
+
+]
+File: afbeeldingen/Staartzenders.jpg Graphic file (type bmp)
+<afbeeldingen/Staartzenders.jpg>
+[12]
+File: RapportBevertelemetrie_files/figure-latex/ggBezoekenMaand-1.pdf Graphic f
+ile (type pdf)
+<use RapportBevertelemetrie_files/figure-latex/ggBezoekenMaand-1.pdf>
+[13] [14]
 Hoofdstuk 3.
 File: RapportBevertelemetrie_files/figure-latex/kaartapril-1.png Graphic file (
 type bmp)
@@ -1468,36 +1482,48 @@ type bmp)
 File: RapportBevertelemetrie_files/figure-latex/kaartaugustus-1.png Graphic fil
 e (type bmp)
 <RapportBevertelemetrie_files/figure-latex/kaartaugustus-1.png>
-[12
 
-] [13]
+LaTeX Warning: Reference `tab:tabZenderbevers' on page 15 undefined on input li
+ne 417.
+
+Font mapping `tex-ansi.tec' for font `[Inconsolatazi4-Regular.otf]/OT:script=la
+tn;language=DFLT;mapping=tex-ansi;' not found.
+[15
+
+] [16]
 Hoofdstuk 4.
-[14
+[17
+
+] [18
+
+] (./RapportBevertelemetrie.bbl) 
+AED: lastpage setting LastPage
+[19
 
 ]
-No file RapportBevertelemetrie.bbl.
-
-AED: lastpage setting LastPage
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 244.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 244.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 456.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 456.
 (./RapportBevertelemetrie.aux)
-Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 244.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 244.
+Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 456.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 456.
 Package rerunfilecheck Info: File `RapportBevertelemetrie.out' has not changed.
 
-(rerunfilecheck)             Checksum: 55340B40F2B96C0563D65E1E07DE7B6B.
+(rerunfilecheck)             Checksum: 5BAD8F066C2D19EB66FEFF31EF396428.
 
 LaTeX Font Warning: Size substitutions with differences
 (Font)              up to 0.5pt have occurred.
 
+
+LaTeX Warning: There were undefined references.
+
  ) 
 Here is how much of TeX's memory you used:
- 26752 strings out of 494854
- 498073 string characters out of 6173178
- 643240 words of memory out of 5000000
- 30305 multiletter control sequences out of 15000+600000
- 538383 words of font info for 88 fonts, out of 8000000 for 9000
+ 26806 strings out of 494854
+ 499470 string characters out of 6173178
+ 651747 words of memory out of 5000000
+ 30350 multiletter control sequences out of 15000+600000
+ 538407 words of font info for 91 fonts, out of 8000000 for 9000
  54 hyphenation exceptions out of 8191
- 50i,14n,81p,1211b,499s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 50i,14n,81p,1211b,551s stack positions out of 5000i,500n,10000p,200000b,80000s
 
-Output written on RapportBevertelemetrie.pdf (15 pages).
+Output written on RapportBevertelemetrie.pdf (20 pages).

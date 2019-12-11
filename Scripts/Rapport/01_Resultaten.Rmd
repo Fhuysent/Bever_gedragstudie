@@ -42,26 +42,34 @@ leaflet(data=InventAug) %>%
 
 ##Telemetrie
 
-tabel \@ref(tab:tabZenderbevers).
+In een eerste fase van het project werden in september-oktober 2017 vier bevers gevangen om het vangen, zenderen en opvolgen via telemetrie te testen. De gegevens van twee van deze bevers bleken niet bruikbaar voor verdere verwerking. Beide andere bevers leverden wel al direct bruikbare data op. Daaropvolgend werden bijkomende vangstsessies georganiseerd in  februari-maart 2018, mei-juni 2018, september-oktober 2018 en februari 2019. Hierbij werden in totaal `r length(unique(levels(Bevers$Bever)))` bevers gevangen waarvan er `r length(unique(levels(Zenderbevers$Bever)))` met een zender werden uitgerust (tabel \@ref(tab:tabZenderbevers)). In de laatste sessie werd immers, door een gelimiteerd aantal zenders dat nog ter beschikking was, geopteerd om niet alle bevers te zenderen. Bevers die niet werden gezenderd werden wel van een staarttag met identificatiecode en een onderhuidse PIT-tag voor identificatie voorzien.
+
+
 
 ```{r tabZenderbevers, echo=FALSE}
 Laatste <- Waarnemingen[,-c(2)] %>% 
   group_by(Bever) %>%
   summarise(Laatste = max(Datumkort, na.rm=T)) %>% 
-  mutate(Laatste = as.Date(Laatste, format="%d/%m/%Y")) 
+  mutate(Laatste = as.Date(Laatste, format="%d/%m/%Y"))
+Datapunten <- Telemetrie[,-c(1)] %>% 
+  group_by(Bever) %>%
+  summarise(Aantal = length(unique(Date)))
 Zendertabel <- merge(Zenderbevers[,c(1,9,20)],Laatste, by="Bever")
-Zendertabel$Einddatum <- as.Date(Zendertabel$Einddatum, format="%d/%m/%Y")
+Zendertabel <- merge(Zendertabel, Datapunten, by="Bever")
 Zendertabel$Vangstdatum <- as.Date(Zendertabel$Vangstdatum, format="%d/%m/%Y")
 Zendertabel <- Zendertabel %>% 
-  mutate(tijd = ifelse(is.na(Einddatum),Laatste-Vangstdatum, Einddatum-Vangstdatum))
+  mutate(tijd = Laatste-Vangstdatum)
 Zendertabel2 <- Zendertabel %>%
   group_by(Bever) %>%
-  summarise(Start = min(Vangstdatum), Laatste = max(Laatste), dagen = sum(tijd))
+  summarise(Start = min(Vangstdatum), Laatste = max(Laatste), dagen = max(tijd), Aantal = max(Aantal))
 Zendertabel <- merge(Zendertabel2, Afstanden, by="Bever") %>% 
-  mutate(Afstand = round(maxdist/1000, digits=2))
-kable(Zendertabel[,-c(5)],
+  mutate(Afstand = round(maxdist/1000, digits=1)) %>% 
+  mutate(dagen = as.numeric(dagen)) %>% 
+  mutate(Start = as.character(Start, format="%d/%m/%Y")) %>% 
+  mutate(Laatste = as.character(Laatste, format="%d/%m/%Y"))
+kable(Zendertabel[,-c(6)],
   caption = "Overzicht dataverzameling gezenderde bevers.",
-  col.names = c("Bever", "Startdatum", "Laatste datum","Tijd","Max. afstand")
+  col.names = c("Bever", "Startdatum", "Laatste datum","Aantal dagen","Aantal datapunten", "Max. afstand")
  )
 ```
 
