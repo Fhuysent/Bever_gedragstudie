@@ -2,27 +2,31 @@
 
 ##Inventarisatie
 
-kaart april
-(Fig. \@ref(fig:kaartapril))
+### April 2017
+
+Tijdens de eerste inventarisatie op 19 april 2017 werden `r dim(InventApril)[1]` locaties met sporen aangetroffen (getypeerd als `r table(InventApril$Type)[1]` `r names(table(InventApril$Type)[1])`, `r table(InventApril$Type)[2]` `r names(table(InventApril$Type)[2])` en `r table(InventApril$Type)[3]` `r names(table(InventApril$Type)[3])`).
+Zoals te zien in Fig. \@ref(fig:kaartapril), waren deze sporen verdeeld in drie verschillende clusters. Een eerste cluster bevond zich tussen Werchter en Haacht waar `r length(InventApril$Waarneming[InventApril$lon>4.644])` van de `r dim(InventApril)[1]` sporen werden gevonden, waaronder `r length(InventApril$Waarneming[InventApril$lon>4.644 & InventApril$Type=="hol"])` van de `r table(InventApril$Type)[2]` holen en `r length(InventApril$Waarneming[InventApril$lon>4.644 & InventApril$Type=="dagrustplaats"])` van de `r table(InventApril$Type)[1]` dagrustplaatsen. In een tweede zone, gelegen tussen Haacht en Rijmenam, werden `r length(InventApril$Waarneming[InventApril$lon<4.644 & InventApril$lon>4.586])` sporen gevonden, waarvan `r length(InventApril$Waarneming[InventApril$lon<4.644 & InventApril$lon>4.586 & InventApril$Type == "hol"])` van de `r table(InventApril$Type)[2]` holen en `r length(InventApril$Waarneming[InventApril$lon<4.644 & InventApril$lon>4.586 & InventApril$Type == "dagrustplaats"])` van de`r table(InventApril$Type)[1]` dagrustplaatsen. In een laatste zone, tussen Rijmenam en Muizen werden nog `r length(InventApril$Waarneming[InventApril$lon<4.586])` van de `r dim(InventApril)[1]` sporen gevonden, allemaal wissels.
 
 ```{r, kaartkleurenapril, include=FALSE}
 pal <- colorFactor(
   palette = c('green','red','blue'),
   domain = InventApril$Type
+  
 )
 ```
 
 ```{r kaartapril, fig.cap="Waargenomen sporen tijdens oeverinspectie op 17 april 2017.", echo=FALSE}
 leaflet(data=InventApril) %>% 
   addTiles() %>%
-  addCircleMarkers(~lon,~lat, color=~pal(Type), stroke = F, radius=5, fillOpacity = 0.8) %>%
+  addCircleMarkers(~lon,~lat, color=~pal(Type), stroke = F, radius=10, fillOpacity = 0.8) %>%
   addLegend("bottomright", pal = pal, values = ~Type,
     title = "Spoortypes",
     opacity = 1)
 ```
+### Augustus 2017
 
-kaart augustus
-(Fig. \@ref(fig:kaartaugustus))
+De inventarisatie op 30 augustus 2017 leverde `r dim(InventAug)[1]` locaties met sporen op (getypeerd als `r table(InventAug$Type)[1]` `r names(table(InventAug$Type)[1])`, `r table(InventAug$Type)[2]` `r names(table(InventAug$Type)[2])` en `r table(InventAug$Type)[3]` `r names(table(InventAug$Type)[3])`). Deze aantallen zijn sterk vergelijkbaar met de inventarisatie in April 2017, enkel het aantal dagrustplaatsen lag iets lager. Dit kan echter een effect zijn van hogere vegetatie die het vinden van dit soort sporen in deze periode moeilijker maakt. 
+Zoals te zien in Fig. \@ref(fig:kaartaugustus), waren deze sporen opnieuw verdeeld in drie verschillende clusters, maar zijn er toch wat verschuivingen in vergelijking met April. Wanneer we dezelfde clusterafbakening hanteren als in april, lagen  `r length(InventAug$Waarneming[InventAug$lon>4.644])` van de `r dim(InventAug)[1]` sporen in de cluster Werchter-Haacht, waarvan `r length(InventAug$Waarneming[InventAug$lon>4.644 & InventAug$Type=="hol"])` van de `r table(InventAug$Type)[2]` holen en `r length(InventAug$Waarneming[InventAug$lon>4.644 & InventAug$Type=="dagrustplaats"])` van de `r table(InventAug$Type)[1]` dagrustplaatsen. In de tweede zone, tussen Haacht en Rijmenam, werden `r length(InventAug$Waarneming[InventAug$lon<4.644 & InventAug$lon>4.586])` sporen gevonden, waarvan `r length(InventAug$Waarneming[InventAug$lon<4.644 & InventAug$lon>4.586 & InventAug$Type == "hol"])` van de `r table(InventAug$Type)[2]` holen en `r length(InventAug$Waarneming[InventAug$lon<4.644 & InventAug$lon>4.586 & InventAug$Type == "dagrustplaats"])` van de `r table(InventAug$Type)[1]` dagrustplaatsen. In de laatste zone, tussen Rijmenam en Muizen werden opnieuw enkel wissels waargenomen, goed voor `r length(InventAug$Waarneming[InventAug$lon<4.586])` van de `r dim(InventApril)[1]` sporen.
 
 ```{r, kaartkleurenaugustus, include=FALSE}
 pal <- colorFactor(
@@ -42,7 +46,9 @@ leaflet(data=InventAug) %>%
 
 ##Telemetrie
 
-In een eerste fase van het project werden in september-oktober 2017 vier bevers gevangen om het vangen, zenderen en opvolgen via telemetrie te testen. De gegevens van twee van deze bevers bleken niet bruikbaar voor verdere verwerking. Beide andere bevers leverden wel al direct bruikbare data op. Daaropvolgend werden bijkomende vangstsessies georganiseerd in  februari-maart 2018, mei-juni 2018, september-oktober 2018 en februari 2019. Hierbij werden in totaal `r length(unique(levels(Bevers$Bever)))` bevers gevangen waarvan er `r length(unique(levels(Zenderbevers$Bever)))` met een zender werden uitgerust (tabel \@ref(tab:tabZenderbevers)). In de laatste sessie werd immers, door een gelimiteerd aantal zenders dat nog ter beschikking was, geopteerd om niet alle bevers te zenderen. Bevers die niet werden gezenderd werden wel van een staarttag met identificatiecode en een onderhuidse PIT-tag voor identificatie voorzien.
+###Vangen en zenderen
+
+Zoals vermeld onder \@ref(h:vangen_mm), werden tijdens een eerste proefperiode in 2017 vier bevers gevangen om het vangen, zenderen en opvolgen via telemetrie te testen. De gegevens van twee van deze bevers bleken niet bruikbaar voor verdere verwerking. Beide andere bevers leverden wel al direct bruikbare data op. Samen met de bevers gevangen in de daaropvolgende vangstsessies werden over de ganse projectperiode in totaal `r length(unique(levels(Bevers$Bever)))` verschillende bevers gevangen, waarvan er `r length(unique(levels(Zenderbevers$Bever)))` met een zender werden uitgerust (tabel \@ref(tab:tabZenderbevers)). In de laatste sessie werd immers, door een gelimiteerd aantal zenders dat nog ter beschikking was, geopteerd om niet alle bevers te zenderen. Bevers die niet werden gezenderd werden wel van een staarttag met identificatiecode en een onderhuidse PIT-tag voor identificatie voorzien.
 
 
 
@@ -55,7 +61,7 @@ Datapunten <- Telemetrie[,-c(1)] %>%
   group_by(Bever) %>%
   summarise(Aantal = length(unique(Date)))
 Zendertabel <- merge(Zenderbevers[,c(1,9,20)],Laatste, by="Bever")
-Zendertabel <- merge(Zendertabel, Datapunten, by="Bever")
+Zendertabel <- merge(Zendertabel, Datapunten, by="Bever", all.x=T)
 Zendertabel$Vangstdatum <- as.Date(Zendertabel$Vangstdatum, format="%d/%m/%Y")
 Zendertabel <- Zendertabel %>% 
   mutate(tijd = Laatste-Vangstdatum)
@@ -64,9 +70,10 @@ Zendertabel2 <- Zendertabel %>%
   summarise(Start = min(Vangstdatum), Laatste = max(Laatste), dagen = max(tijd), Aantal = max(Aantal))
 Zendertabel <- merge(Zendertabel2, Afstanden, by="Bever") %>% 
   mutate(Afstand = round(maxdist/1000, digits=1)) %>% 
-  mutate(dagen = as.numeric(dagen)) %>% 
+  mutate(dagen = as.numeric(dagen)+1) %>% 
   mutate(Start = as.character(Start, format="%d/%m/%Y")) %>% 
-  mutate(Laatste = as.character(Laatste, format="%d/%m/%Y"))
+  mutate(Laatste = as.character(Laatste, format="%d/%m/%Y")) %>% 
+  mutate(Aantal = replace_na(Aantal, 0))
 kable(Zendertabel[,-c(6)],
   caption = "Overzicht dataverzameling gezenderde bevers.",
   col.names = c("Bever", "Startdatum", "Laatste datum","Aantal dagen","Aantal datapunten", "Max. afstand")

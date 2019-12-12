@@ -1,14 +1,25 @@
 #Materiaal en Methoden
 
-##Inventarisatie
+##Inventarisatie {#h:inventaristatie_mm}
 
-We hebben
-`r length(unique(levels(Zenderbevers$Bever)))`
-gezenderd.
+In 2017 werden op 19 april en 30 augustus twee grondige inspecties van de oevers uitgevoerd vanop het water. Daarbij werd bij een gecontroleerd verlaagde waterstand met kano vanaf de samenvloeiing van Demer en Dijle in Werchter tot aan de brug ter hoogte van de brugstraat in Muizen gevaren. Door de positie op het water en de lage waterstand werden holen die zich onder de waterlijn bevonden zichtbaar.
 
-##Telemetrie
+Tijdens de inventarisaties werden de verschillende beversporen opgedeeld in drie types sporen (fig. \@ref(fig:Spoortypes):
+- wissels,
+- dagrustplaatsen,
+- holen.
 
-###Vangen
+Vooral holen vormen een structurele bedreiging voor de stabiliteit van de dijken. Ook sommige dagrustplaatsen kunnen in de dijk zijn ingegraven maar bevinden zich steeds boven de hoogwaterlijn en strekken zich veel minder diep (<1m) in de dijk uit. Op locaties waar verschillende spoortypes zich op dezelfde plaats bevonden werden alle spoortypes beschreven maar werd de locatie getypeerd in volgorde van belang (hol > dagrustplaats > wissel) (zie ook \@ref(fig:kaartapril) en \@ref(fig:kaartaugustus).
+
+Deze aanpak zorgde ervoor dat een eerste indruk werd verkregen van een eventuele clustering van sporen binnen het studiegebied om zo een inschatting van het aantal mogelijke territoria te krijgen. Daarnaast liet het toe na te gaan op welke plaatsen het risico op structurele schade het hoogst was en of daar seizoenale verschuivingen (voorjaar/zomer) in bestonden.
+
+```{r Spoortypes, fig.cap = "De verschillende types sporen die in kaart werden gebracht tijdens inventaristaties. Van links naar rechts: wissel, dagrustplaats en hol.", echo=FALSE}
+include_graphics("afbeeldingen/Sporen.jpg")
+```
+
+##Telemetrie {#h:telemetrie_mm}
+
+###Vangen {#h:vangen_mm}
 
 Voor het levend vangen van bevers werd binnen een initiële verkenningsronde tussen juli en oktober 2017 geëxperimeteerd met kooivallen en klapvallen (type _Bailey_). Gedurende deze periode werden vier bevers gevangen. Drie bevers werden in een kooival gevangen, de vierde (BE1004) werd met een schepnet gevangen op een betonnen vijver waarin het dier vast was komen zitten. Op basis van deze ervaringen werd geopteerd om enkel een inloopkooi op het land met valdeuren aan beide zijden te gebruiken, een zogenaamde tunnelval-principe dat zijn effectiviteit voldoende heeft bewezen [@Rosell1998]. De hier gebruikte vallen hebben een afmeting van `L 2,15 * B 0,60 * H 0,70`m en zijn vervaardigd uit bouwstaalmatten van 8 mm met een maaswijdte van 5 cm (zie fig. \@ref(fig:Bevervangst) links). Binnen dit project werden vanaf 2018 in totaal zeven van dergelijke vallen ingezet. De vallen werden uitgerust met wildcamera’s van het type _Dörr Snapshot Mobil SSL GPRS 5.1 Black_ (zie fig. \@ref(fig:Bevervangst) rechts). Dergelijke camera's sturen bij detectie van warmte en beweging een beeld door naar een e-mail postvak zodat een directe controle mogelijk is en in geval van vangst snel mensen ter plaatse kunnen zijn . 
 
@@ -18,8 +29,8 @@ Na de proefperiode in 2017 werden binnen de projecttermijn in totaal nog vier bi
 include_graphics("afbeeldingen/Bevervangst.jpg")
 ```
 
-###Zenderen
-
+###Zenderen {#h:zenderen_mm}
+ 
 Gevangen bevers werden vanuit de kooi gevangen in een schepnet, waarin ze op de grond werd gefixeerd en waarbij de kop werd afgedekt. Op deze manier gefixeerde bevers houden zich verder rustig zodat alle nodige handelingen in minder dan 30 minuten kunnen worden afgewerkt. Tijdens deze fixatie werden eerst lichaamslengte (snuit-staart), staartlengte en staartbreedte genoteerd. Het geslacht werd op dit moment niet bepaald, dit kan immers enkel door palpatie van het baculum, wat moeilijk is, zodat vaak ook genetische analyse of post-mortem onderzoek voor geslachtsbepaling wordt gebruikt [@Windels2016]. Er werd daarom geopteerd om de dieren niet ter plaatse te seksen maar naderhand op basis van waarnemingen en gedrag een inschatting van het geslacht te maken.
 
 Na het verzamelen van deze biometrische gegevens werd bij elke bever een onderhuidse passieve transponder (PIT, type _Trovan ID-100_) ingeplant ter hoogte van de linkerschouder. Dit moet toelaten later teruggevonden of –gevangen bevers te identificeren met een uitleesapparaat (hier type _Trovan LID 560_) ook wanneer andere merktekens zouden zijn verdwenen. In de staart werd verder, op enkele centimeter van de rand, een gemodificeerd oormerk met VHF-zender en mortaliteitssensor aangebracht [@Arjo2008; @Windels2016]. Aanvankelijk werden zowel zenders met uitwendige antenne als met inwendige antenne  gebruikt (fig. \@ref(fig:Fotozender)). Zenders met een uitwendige antenne zouden een beter signaal kunnen genereren, wat bij een voornamelijk in het water levend zoogdier als bever niet onbelangrijk is. Evenwel bleek snel dat zenders met uitwendige antenne sneller uit de staart scheurden, vermoedelijk door het ophopen van plantmateriaal rond de antenne. Om die reden werd  tijdens het project overgeschakeld naar enkel zenders met inwendige antennes. Vier van de uiteindelijk gebruikte zenders met uitwendige antenne waren van het type _Advanced Telemetry Systems Tail Tag Transmitter_ (38g) en twee van het type _Sirtrack Ear Tag V2E 154B Whip_ (30g). Er werden daarnaast 19 zenders met inwendige antenne aangebracht van het type _Sirtrack Ear Tag V2E 154A Loop_ (27g). Dit geeft een totaal van 25 zenders op `r length(unique(levels(Zenderbevers$Bever)))` opgevolgde bevers, een gevolg van het opnieuw zenderen van bevers bij wie de zender was verdwenen of waarvan de batterijlevensduur was verstreken. Bij het manipuleren van gevangen bevers werd finaal, in functie van eventuele heridentificatie op camervalfoto’s, een beeld van de staart gemaakt, nadat de zender werd geplaats (zie ook fig. \@ref(fig:Fotozender)) en werden bevers gewogen tot op 100g nauwkeurig. Alle zenders werden geprogrammeerd op een pulse frequentie van 30 pulses/min. en een mortaliteitsinterval van 6h, wat overeenkomt met een verwachte levensduur van de batterij van 420 dagen. 
@@ -28,7 +39,7 @@ Na het verzamelen van deze biometrische gegevens werd bij elke bever een onderhu
 include_graphics("afbeeldingen/Staartzenders.jpg")
 ```
 
-###Telemetrie
+###Telemetrie {#h:telemetrie2_mm}
 
 Bevers die van een zender waren voorzien konden worden opgevolgd via telemetrie. Hiervoor gebruikten we een ontvanger, type _Biotrack Sika receiver_ en twee verschillende antennes. Dit laat toe de omgeving af te scannen op de specifieke frequenties die door elk van de actieve beverzenders worden uitgezonden. In eerste instantie werd met behulp van een vaste, met een magneet op het dak van een wagen bevestigde antenne, type _Magmount omni-directional_, de wijde omgeving al rijdend gescand. Het oppikken van een ritmisch piepend geluid op een bepaalde frequentie betekent dan dat de bever met de zender die op die specifieke frequentie uitzendt in de buurt is, meestal binnen enkele honderden meters. Een enkel ritmisch signaal wees op een actieve bever, groepen van kort op elkaar volgende piepjes wijzen op langdurige inactiviteit (> 6h, mortaliteitssignaal). Na het oppikken van een signaal met de dakantenne werd lokaal overgeschakeld op een in de hand gehouden antenne, type _Lintec flexible Yagi_. Door met deze antenne telkens de richting te bepalen waarin het signaal het sterkst is kon de exacte locatie van het signaal worden bepaald. Door het feit dat bevers zich voornamelijk op waterlopen ophouden kon dit hoofdzakelijk worden gedaan door op de jaagpaden op de dijken te rijden en daar vervolgens op verder te stappen. Dit resulteerde ofwel in een directe waarneming van de bever of in een signaal van een bever die zich op een vaste locatie onder de grond in een hol of burcht bevond zodat het telkens mogelijk was aan de hand van gps en orthofoto’s binnen de Google Maps applicatie op smartphone de exacte locatie van de bever op dat tijdstip te bepalen. Bij het oppikken van een mortaliteitssignaal werd telkens geprobeerd de zender terug te bemachtigen of tijdens volgende controles bevestiging van het mortaliteitssignaal op dezelfde locatie te krijgen. Na bevestiging werden deze zender als inactief geregistreerd en werden bij verdere data-analyse de gegevens van deze zender beperkt tot en met het laatste actieve signaal.
 
@@ -60,7 +71,7 @@ Time <- Visits %>%
   mutate(Uren = (max(Tijdstip) - min(Tijdstip))/3600)
 ```
 
-Dit terreinwerk werd uitgevoerd op `r max(Visits$Visit)` verschillende momenten doorheen de studieperiode, verdeeld over de verschillende maanden zoals getoond in figuur \@ref(fig:ggBezoekenMaand). In het totaal werden `r sum(Time$Uren)` uren gepresteerd aan telemetriewerk, berekend als de tijd tussen de registratie van de eerste localisatie en de laatste tijdens eenzelfde bezoek. De duur van een enkel bezoek bedroeg gemiddeld `r round(mean(Time$Uren),digits=2)` uren, met een maximum van `r round(max(Time$Uren), digits=2)`.
+Dit terreinwerk werd uitgevoerd op `r max(Visits$Visit)` verschillende momenten doorheen de studieperiode, verdeeld over de verschillende maanden zoals getoond in figuur \@ref(fig:ggBezoekenMaand). Daar wordt duidelijk dat maandelijks zo goed als steeds minstens vijf veldbezoeken gebeurden, behalve in de tweede helft van 2019, toen er nog maar een beperkt aantal bevers met actieve zenders in het gebied aanwezig waren. Ook is duidelijk dat, met uitzondering van de maand juni, elke maand in minstens twee verschillende jaren werd bemonsterd. Verder werden in elke maand over alle jaren minstens 10 veldbezoeken uitgevoerd, hier met uitzondering van de maand juli, waar in totaal zeven veldbezoeken plaatsvonden over twee verschillende jaren. In het totaal werden `r sum(Time$Uren)` uren gepresteerd aan telemetriewerk, berekend als de tijd tussen de registratie van de eerste localisatie en de laatste tijdens eenzelfde bezoek. De duur van een enkel bezoek bedroeg gemiddeld `r round(mean(Time$Uren),digits=2)` uren, met een maximum van `r round(max(Time$Uren), digits=2)`.
 
 ```{r ggBezoekenMaand, fig.cap= "Verdeling van het aantal bezoeken in een gegeven maand over de verschillende jaren van de studie", warning=FALSE}
 plot <- Visits %>% 
@@ -77,6 +88,6 @@ ggplot(plot, aes(x=Maand, y=Aantal)) +
 
 \FloatBarrier
 
-##Dataverwerking
+##Dataverwerking {#h:dataverwerking_mm}
 
-De verwerking van de gegevens gebeurde in het programma _R_ versie 3.5.1.
+De verwerking van de gegevens gebeurde in het programma _R_ versie 3.5.1. [@R2019].
