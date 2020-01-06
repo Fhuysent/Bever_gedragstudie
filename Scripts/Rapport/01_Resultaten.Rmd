@@ -1,6 +1,6 @@
 #Resultaten
 
-##Inventarisatie
+##Inventarisatie {#h:inventarisatieres}
 
 ### April 2017
 
@@ -44,13 +44,11 @@ leaflet(data=InventAug) %>%
     opacity = 1)
 ```
 
-##Telemetrie
+##Telemetrie {#h:telemetrieres}
 
-###Vangen en zenderen
+###Vangen en zenderen {#h:vangenzenderen}
 
-Zoals vermeld onder \@ref(h:vangen_mm), werden tijdens een eerste proefperiode in 2017 vier bevers gevangen om het vangen, zenderen en opvolgen via telemetrie te testen. De gegevens van twee van deze bevers bleken niet bruikbaar voor verdere verwerking. Beide andere bevers leverden wel al direct bruikbare data op. Samen met de bevers gevangen in de daaropvolgende vangstsessies werden over de ganse projectperiode in totaal `r length(unique(levels(Bevers$Bever)))` verschillende bevers gevangen, waarvan er `r length(unique(levels(Zenderbevers$Bever)))` met een zender werden uitgerust (tabel \@ref(tab:tabZenderbevers)). In de laatste sessie werd immers, door een gelimiteerd aantal zenders dat nog ter beschikking was, geopteerd om niet alle bevers te zenderen. Bevers die niet werden gezenderd werden wel van een staarttag met identificatiecode en een onderhuidse PIT-tag voor identificatie voorzien.
-
-
+Zoals vermeld onder \@ref(h:vangenmm), werden tijdens een eerste proefperiode in 2017 vier bevers gevangen om het vangen, zenderen en opvolgen via telemetrie te testen. De gegevens van twee van deze bevers bleken niet bruikbaar voor verdere verwerking. Beide andere bevers leverden wel al direct bruikbare data op. Samen met de bevers gevangen in de daaropvolgende vangstsessies werden over de ganse projectperiode in totaal `r length(unique(levels(Bevers$Bever)))` verschillende bevers gevangen, waarvan er `r length(unique(levels(Zenderbevers$Bever)))` met een zender werden uitgerust (tabel \@ref(tab:tabZenderbevers)). In de laatste sessie werd immers, door een gelimiteerd aantal zenders dat nog ter beschikking was, geopteerd om niet alle bevers te zenderen. Bevers die niet werden gezenderd werden wel van een staarttag met identificatiecode en een onderhuidse PIT-tag voor identificatie voorzien.
 
 ```{r tabZenderbevers, echo=FALSE}
 Laatste <- Waarnemingen[,-c(2)] %>% 
@@ -80,7 +78,40 @@ kable(Zendertabel[,-c(6)],
  )
 ```
 
-tekst 
+Bevers met een zender konden gemiddeld `r round(mean(Zendertabel$dagen), digits=0)` dagen worden opgevolgd, variërend van `r min(Zendertabel$dagen)` tot `r max(Zendertabel$dagen)`. Dit leverde gemiddeld  `r round(mean(Zendertabel$Aantal), digits=0)` (`r min(Zendertabel$Aantal)`-`r max(Zendertabel$Aantal)`) datapunten per bever op. Dit betekent dat gemiddeld elke `r Zendertabel %>% mutate(opbrengst = Aantal/dagen) %>% summarise(effectiviteit = round(1/mean(opbrengst),digits=1))` dagen een localisatie kon worden bepaald.
 
+Al deze gegevens zijn informatief maar voor de gedetailleerde verwerking wordt enkel gebruik gemaakt van gegevens van bevers die voldoende gegevens opleverden. Omdat de gegevens verder per maand zullen worden geanalyseerd werd ervoor geopteerd om voor deze detailanalyses enkel die bevers te weerhouden die minstens een volledige maand konden worden opgevolgd. Gezien het gemiddelde van `r Zendertabel %>% mutate(opbrengst = Aantal/dagen) %>% summarise(effectiviteit = round(1/mean(opbrengst),digits=1))` dagen tussen twee localisaties, werd daarbij geopteerd om ook een minimum van 10 verzamelde datapunten als ondergrens voor gedetailleerde verwerking te hanteren.
 
-##Analyse {#analyse}
+Dit zorgde ervoor dat `r length(Zendertabel$Bever[Zendertabel$Aantal>9 & Zendertabel$dagen>30])` van de `r length(unique(levels(Zenderbevers$Bever)))` gezenderde bevers geschikt waren voor detailanalyse. Tabel \@ref(tab:tabZenderbevers) leert dat van de 
+`r length(unique(levels(Zenderbevers$Bever))) - (length(Zendertabel$Bever[Zendertabel$Aantal>9 & Zendertabel$dagen>30]))` 
+er
+`r length(Zendertabel$Bever[Zendertabel$Aantal<6])` zelfs vijf of minder datapunten hadden opgeleverd. Verder toont tabel \@ref(tab:tabZenderbevers) dat door het verwijderen van deze bevers ook de extreme waarden in maximaal waargenomen afstand tussen twee punten werden verwijderd. Dit is logischerwijs het gevolg voor de bevers die geen data opleverden maar zorgt er ook voor dat de twee hoogst vastgestelde afstanden uit de dataset verdwijnen. Dit zorgt er in zijn geheel voor dat de gemiddelde afstand van `r round(mean(Zendertabel$maxdist)/1000,digits=2)` ± `r round(sd(Zendertabel$maxdist)/1000,digits=2)` km voor de volledige dataset wordt bijgesteld tot `r round(mean(Zendertabel$maxdist[Zendertabel$dagen>30 & Zendertabel$Aantal>9])/1000,digits=2)` ± `r round(sd(Zendertabel$maxdist[Zendertabel$dagen>30 & Zendertabel$Aantal>9])/1000,digits=2)` km.
+
+##Analyse {#h:analyse}
+
+###Berekening home ranges {#h:MCPanalyses}
+
+```{r MCPkaart, fig.cap="Home ranges voor de 14 bevers met geschikte data, berekend via MCP.", echo=FALSE}
+Databevers <- Zendertabel$Bever[Zendertabel$dagen>30 & Zendertabel$Aantal >10] %>% 
+  droplevels()
+
+HRdata <- Waarnemingen %>% 
+  filter(Bever %in% Databevers) %>% 
+  droplevels()
+
+coordinates(HRdata) <- c("lon","lat")
+proj4string(HRdata) <- CRS(WGS84)
+
+##95%MCP
+cp <- mcp(HRdata[,1], percent=95, unin = "m", unout = "ha")
+
+mcpopp <- mcp.area(HRdata[,1], percent=seq(50, 100, by = 5))
+##Oppervlakten
+as.data.frame(cp)
+
+pal <- colorFactor(palette = polychrome(14) , domain = cp@data$id)
+
+leaflet()%>%
+  addTiles()%>%
+  addPolygons(data=cp, color=~pal(id), fillOpacity = 1, stroke = F)
+```
