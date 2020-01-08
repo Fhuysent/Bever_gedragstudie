@@ -91,7 +91,7 @@ er
 
 ###Berekening home ranges {#h:MCPanalyses}
 
-```{r MCPkaart, fig.cap="Home ranges voor de 14 bevers met geschikte data, berekend via MCP.", echo=FALSE}
+```{r berekening MCP home ranges, echo=FALSE}
 Databevers <- Zendertabel$Bever[Zendertabel$dagen>30 & Zendertabel$Aantal >10] %>% 
   droplevels()
 
@@ -101,14 +101,21 @@ HRdata <- Waarnemingen %>%
 
 coordinates(HRdata) <- c("lon","lat")
 proj4string(HRdata) <- CRS(WGS84)
+HRdata <- spTransform(HRdata, BEL)
 
 ##95%MCP
+##om een nog niet duidelijke reden geeft enkel km input en m2 output de juiste output in ha
 cp <- mcp(HRdata[,1], percent=95, unin = "m", unout = "ha")
 
-mcpopp <- mcp.area(HRdata[,1], percent=seq(50, 100, by = 5))
 ##Oppervlakten
-as.data.frame(cp)
+Oppervlaktes  <- as.data.frame(cp)
+```
 
+```{r percentage, fig.cap="Evolutie ", echo=FALSE}
+mcpopp <- mcp.area(HRdata[,1], percent=seq(50, 100, by = 5))
+```
+
+```{r MCPkaart, fig.cap="Home ranges voor de 14 bevers met geschikte data, berekend via MCP.", echo=FALSE}
 pal <- colorFactor(palette = polychrome(14) , domain = cp@data$id)
 
 leaflet()%>%

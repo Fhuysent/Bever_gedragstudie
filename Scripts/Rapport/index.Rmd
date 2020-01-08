@@ -78,6 +78,59 @@ if (!interactive() && opts_knit$get("rmarkdown.pandoc.to") != "html") {
     )
   )
 }
+
+##Eigen functies
+##Polygon_kml_coord function
+##gets names and coordinates from kml polygons
+
+Polygon_kml_coord <- function(fileName){
+  kml.text <- readLines(fileName)
+  coordstart <- grep("<coordinates>",kml.text)
+  coordeind <- grep("</coordinates>",kml.text)
+  coords <- NULL
+  for (i in 1:length(coordstart)){
+    start <- coordstart[i]
+    eind <- coordeind[i]
+    naam <- gsub("^.*>","",gsub("</name>","",kml.text[start-6]))
+    for (j in (start+1):(eind-1)){
+      coordi <- as.data.frame(kml.text[j])
+      colnames(coordi) <- c("ruw")
+      coordi <- coordi %>%
+        separate(ruw, c("x", "y", "z"), ",")
+      coordi <- cbind(naam, coordi)
+      coords <- rbind(coords,coordi)
+    }
+  }
+  coords <- coords[,1:3]
+  return(coords)
+}
+
+##Line_kml_coord function
+##gets names and coordinates from kml lines
+
+Line_kml_coord <- function(fileName){
+  kml.text <- readLines(fileName)
+  coordstart <- grep("<coordinates>",kml.text)
+  coordeind <- grep("</coordinates>",kml.text)
+  coords <- NULL
+  for (i in 1:length(coordstart)){
+    start <- coordstart[i]
+    eind <- coordeind[i]
+    naam <- gsub("^.*>","",gsub("</name>","",kml.text[start-4]))
+    for (j in (start+1):(eind-1)){
+      coordi <- as.data.frame(kml.text[j])
+      colnames(coordi) <- c("ruw")
+      coordi <- coordi %>%
+        separate(ruw, c("x", "y", "z"), ",")
+      coordi <- cbind(naam, coordi)
+      coords <- rbind(coords,coordi)
+    }
+  }
+  coords <- coords[,1:3]
+  return(coords)
+}
+
+
 ```
 
 ```{r, data inlezen, include=FALSE}
@@ -96,6 +149,40 @@ for (fileName in fileNames) {
   tmp <- read.csv2(fileName, header=TRUE)
   Telemetrie <- rbind(Telemetrie,tmp)
 }
+##Dijle, Demer en Laak als Lijnen inlezen
+fileName <- "input/kml/Dijle.kml"
+fileName_short <- sub(".kml","", substr(fileName,11,20))
+assign(fileName_short, as.data.frame(Polygon_kml_coord(fileName)))
+Dijle$naam <- "Dijle"
+Dijle$x <- as.numeric(Dijle$x)
+Dijle$y <- as.numeric(Dijle$y)
+coordinates(Dijle) <- c("x","y")
+Dijle <- SpatialLines(list(Lines(list(Line(Dijle)), "id")))
+
+fileName <- "input/kml/Demer.kml"
+fileName_short <- sub(".kml","", substr(fileName,11,20))
+assign(fileName_short, as.data.frame(Polygon_kml_coord(fileName)))
+Demer$naam <- "Demer"
+Demer$x <- as.numeric(Demer$x)
+Demer$y <- as.numeric(Demer$y)
+coordinates(Demer) <- c("x","y")
+Demer <- SpatialLines(list(Lines(list(Line(Demer)), "id")))
+
+fileName <- "input/kml/Laak.kml"
+fileName_short <- sub(".kml","", substr(fileName,11,20))
+assign(fileName_short, as.data.frame(Polygon_kml_coord(fileName)))
+Laak$naam <- "Laak"
+Laak$x <- as.numeric(Laak$x)
+Laak$y <- as.numeric(Laak$y)
+coordinates(Laak) <- c("x","y")
+Laak <- SpatialLines(list(Lines(list(Line(Laak)), "id")))
+
+leaflet() %>%
+  addTiles() %>%
+  addPolylines(data=Dijle) %>%
+  addPolylines(data=Demer) %>%
+  addPolylines(data=Laak)
+
 ##verwijder tijdelijke files
 remove(tmp,fileName,fileNames)
 ```
