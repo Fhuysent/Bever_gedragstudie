@@ -48,6 +48,8 @@ library(raster)
 library(lubridate)
 library(adehabitatHR)
 library(pals)
+library(RColorBrewer)
+library(reshape)
 #library(mapview)
 #library(raster)
 library(knitr)
@@ -177,11 +179,10 @@ Laak$y <- as.numeric(Laak$y)
 coordinates(Laak) <- c("x","y")
 Laak <- SpatialLines(list(Lines(list(Line(Laak)), "id")))
 
-leaflet() %>%
-  addTiles() %>%
-  addPolylines(data=Dijle) %>%
-  addPolylines(data=Demer) %>%
-  addPolylines(data=Laak)
+##Laak niet meenemen, te specifiek voor slechts enkele bevers
+Rivieren <- rbind(Dijle,Demer)
+
+
 
 ##verwijder tijdelijke files
 remove(tmp,fileName,fileNames)
