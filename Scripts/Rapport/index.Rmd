@@ -49,7 +49,7 @@ library(lubridate)
 library(adehabitatHR)
 library(pals)
 library(RColorBrewer)
-library(reshape)
+library(sp)
 #library(mapview)
 #library(raster)
 library(knitr)
@@ -136,6 +136,9 @@ Line_kml_coord <- function(fileName){
 ```
 
 ```{r, data inlezen, include=FALSE}
+#Grids definieren
+BEL <- "+init=epsg:31370"
+WGS84 <- "+init=epsg:4326"
 ##gegevens importeren uit excel databank telemetrie
 Bevers <- read_excel('input/Zenderdatabank.xlsx', sheet = "Vangstgegevens")
 Jongen <- read_excel('input/Zenderdatabank.xlsx', sheet = "Voortplanting")
@@ -182,17 +185,35 @@ Laak <- SpatialLines(list(Lines(list(Line(Laak)), "id")))
 ##Laak niet meenemen, te specifiek voor slechts enkele bevers
 Rivieren <- rbind(Dijle,Demer)
 
+##Meanders inlezen als polygoon
+fileName <- "input/kml/Meanders.kml"
+fileName_short <- "Meanders"
+assign(fileName_short, as.data.frame(Polygon_kml_coord(fileName)))
+Meanders$x <- as.numeric(Meanders$x)
+Meanders$y <- as.numeric(Meanders$y)
+coordinates(Meanders) <- c("x","y")
+Meanders$group <- Meanders$naam
+Meanders$id <- Meanders$naam
+data <- data.frame(box_id=unique(Meanders$naam),row.names=unique(Meanders$id))
 
+points2polygons <- function(df,data) {
+  get.grpPoly <- function(group,ID,df) {
+    Polygon(coordinates(df[df$id==ID & df$group==group,]))
+  }
+  get.spPoly  <- function(ID,df) {
+    Polygons(lapply(unique(df[df$id==ID,]$group),get.grpPoly,ID,df),ID)
+  }
+  spPolygons  <- SpatialPolygons(lapply(unique(df$id),get.spPoly,df))
+  SpatialPolygonsDataFrame(spPolygons,match.ID=T,data=data)
+}
+MeandersPoly <- points2polygons(Meanders,data)
+proj4string(MeandersPoly) <- CRS(WGS84)
 
 ##verwijder tijdelijke files
 remove(tmp,fileName,fileNames)
 ```
 
 ```{r, datacleaning, include=FALSE}
-#Grids definieren
-BEL <- "+init=epsg:31370"
-WGS84 <- "+init=epsg:4326"
-
 #dataformats
 #Bevers
 Bevers$Bever <- as.factor(Bevers$Bever)

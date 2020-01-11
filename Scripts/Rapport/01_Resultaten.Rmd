@@ -102,6 +102,9 @@ HRdata <- Waarnemingen %>%
 coordinates(HRdata) <- c("lon","lat")
 proj4string(HRdata) <- CRS(WGS84)
 
+##toevoegen welke punten in welke meander liggen
+HRdata$polygon_id = over(HRdata, MeandersPoly, returnlist = T)
+
 ##plot in WGS84
 plotMCP95 <- mcp(HRdata[,1], percent=95, unin = "m", unout = "ha")
 
@@ -170,5 +173,24 @@ TabelHR <- merge(Oppervlaktes,Rivierlengtes, by.x="id", by.y="Bever") %>%
 kable(TabelHR,
   caption = "Overzicht home range groottes per bever.",
   col.names = c("Bever", "Oppervlakte (95%MCP) (ha)", "Oeverlengte (km)")
+ )
+```
+
+```{r TabhMeanders}
+Meanderdata <- as.data.frame(HRdata@data)
+Meanderdata$polygon_id <- Meanderdata$polygon_id$box_id
+Meanderdata$meander <- 1
+Meanderdata$meander[is.na(Meanderdata$polygon_id)] <- 0
+library(lubridate)
+Meanderdata$Maand <- month(Meanderdata$Datumkort)
+
+TabelMeanders <- Meanderdata %>%
+  group_by(Maand) %>% 
+  summarise(waarnemingen = length(Bever), InMeander = sum(meander), Aandeel =
+              InMeander/waarnemingen*100) 
+
+kable(TabelMeanders,
+  caption = "Overzicht waarnemingen binnen en buiten meanders.",
+  col.names = c("Maand", "Aantal waarnemingen", "Binnen meander", "Aandeel")
  )
 ```
