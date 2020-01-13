@@ -35,7 +35,6 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-library(tidyverse)
 library(readxl)
 library(rgdal)
 library(inborutils)
@@ -50,6 +49,8 @@ library(adehabitatHR)
 library(pals)
 library(RColorBrewer)
 library(sp)
+library(reshape2)
+library(tidyverse)
 #library(mapview)
 #library(raster)
 library(knitr)
