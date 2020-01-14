@@ -278,7 +278,7 @@ x <- 0
 }
 
 ##verwijder tijdelijke files
-remove(i,j,k,x,y)
+remove(i,j,k,x,y, fileName_short)
 ```
 
 # {-}

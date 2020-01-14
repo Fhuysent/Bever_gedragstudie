@@ -57,7 +57,7 @@ Laatste <- Waarnemingen[,-c(2)] %>%
   mutate(Laatste = as.Date(Laatste, format="%d/%m/%Y"))
 Datapunten <- Telemetrie[,-c(1)] %>% 
   group_by(Bever) %>%
-  summarise(Aantal = length(unique(Date)))
+  summarise(Aantal = length(Date))
 Zendertabel <- merge(Zenderbevers[,c(1,9,20)],Laatste, by="Bever")
 Zendertabel <- merge(Zendertabel, Datapunten, by="Bever", all.x=T)
 Zendertabel$Vangstdatum <- as.Date(Zendertabel$Vangstdatum, format="%d/%m/%Y")
@@ -120,6 +120,7 @@ cp <- mcp(HRdata2[,1], percent=95, unin = "m", unout = "ha")
 ##Oppervlakten
 Oppervlaktes  <- as.data.frame(cp)
 ```
+
 ```{r Kleurenpalet instellen}
 colourCount = length(unique(HRdata@data$Bever))
 getPalette = colorRampPalette(brewer.pal(9, "Set1"))
@@ -205,13 +206,15 @@ TabelHRSeizoen <- Seizoen %>%
   mutate(Winter = round(Winter,2))
 
 kable(TabelHRSeizoen,
-  caption = "Overzicht Home range groottes per seizoen."
- )
+  caption = "Overzicht Home range groottes per seizoen.",
+  align = "c"
+ ) %>% 
+  kable_styling(bootstrap_options = "striped",full_width = F , position = "center")
 ```
 
-###Seizoenaliteit
+###Seizoenaliteit {#h:seizoenaliteit}
 
-Om eventuele verschillen in territoriumgrootte per semester na te gaan werd ook een berekening van de 95 % MCP per halfjaar uitgevoerd. Hierbij werden alle gegevens verzameld in de maanden april-september als zomer aangeduid en alle waarnemingen gedaan in de periode oktober-maart als winter (Tab. \@ref(tab:tabseizoenranges)). Door het opsplitsen van de gegevens ontstaat echter vrij veel ruis op het berekenen van de oppervlaktes en door ongelijke verdeling van het aantal datapunten per halfjaar is een eenduidige vergelijking moeilijk. Toch blijkt over alle punten heen het verschil, alhoewel soms individueel sterk verschillend, niet significant verschillend (t = `r t.test(TabelHRSeizoen$Zomer,TabelHRSeizoen$Winter, paired=T)[1]`, p = `r t.test(TabelHRSeizoen$Zomer,TabelHRSeizoen$Winter, paired=T)[3]`, df = `r t.test(TabelHRSeizoen$Zomer,TabelHRSeizoen$Winter, paired=T)[2]`). Om seizoenale verschillen in gedrag en territoriumgebruik te vergelijken lijkt het dus meer aangewezen om het exact berekenen van home range grootte achterwege te laten en een meer tentatieve vergelijking van enkel die bevers waarvan veel gegevens over verschilende jaarhelften beschikbaar zijn. Deze aanpak komt verder aan bod onder VERWIJZING...
+Om eventuele verschillen in territoriumgrootte per semester na te gaan werd ook een berekening van de 95 % MCP per halfjaar uitgevoerd. Hierbij werden alle locatiegegevens die werden verzameld in de maanden april-september als zomer aangeduid en alle waarnemingen gedaan in de periode oktober-maart als winter (Tab. \@ref(tab:tabseizoenranges)). Door het opsplitsen van de gegevens ontstaat echter vrij veel ruis op het berekenen van de oppervlaktes en door ongelijke verdeling van het aantal datapunten per halfjaar is een eenduidige vergelijking moeilijk. Toch blijkt over alle punten heen het verschil, alhoewel soms individueel sterk verschillend, niet significant verschillend (t = `r round(as.numeric(t.test(TabelHRSeizoen$Zomer,TabelHRSeizoen$Winter, paired=T)[1]),2)`, p = `r round(as.numeric(t.test(TabelHRSeizoen$Zomer,TabelHRSeizoen$Winter, paired=T)[3]),2)`, df = `r t.test(TabelHRSeizoen$Zomer,TabelHRSeizoen$Winter, paired=T)[2]`. Om seizoenale verschillen in gedrag en territoriumgebruik te vergelijken lijkt het dus meer aangewezen om het exact berekenen van home range grootte achterwege te laten en een meer tentatieve vergelijking van enkel die bevers waarvan veel gegevens over verschilende jaarhelften beschikbaar zijn. Deze aanpak komt verder aan bod onder \@ref(h:casussen).
 
 ```{r tabmeanders, echo=FALSE}
 Meanderdata <- as.data.frame(HRdata@data)
@@ -232,7 +235,7 @@ kable(TabelMeanders,
  )
 ```
 
-###Gebruik meanders
+###Gebruik meanders {#h:meandergebruik}
 
 In totaal werden `r sum(TabelMeanders$waarnemingen)` locatiebepalingen weerhouden, waarvan er `r sum(TabelMeanders$InMeander)` (`r round(sum(TabelMeanders$InMeander)/sum(TabelMeanders$waarnemingen)*100,1)` %) zich binnen een meander bevonden (Tab. \@ref(tab:tabmeanders). Dit aandeel vertoont wel een sterke seizoenaliteit, waar vooral de periode december-februari erg belangrijk lijkt te zijn voor het gebruik van de meanders binnen de home range. 
 
@@ -240,33 +243,14 @@ Daarnaast lijkt het ook duidelijk dat meanders belangrijk zijn als rust en voort
 `r length(unique(Burchten$Burcht[Burchten$Locatie=="Meander"]))` burchten op een meander, 
 `r length(unique(Burchten$Burcht[Burchten$Locatie=="Vijver"]))` op een privévijver, en `r length(unique(Burchten$Burcht[Burchten$Locatie=="Dijk"]))` in een dijk.
 
-Ook hier zorgt de vaak ongelijke verspreiding van datapunten in de tijd en ruimte over de  verschillende bevers voor wat onduidelijkheid maar lijkt de algemene trend van een verhoogd gebruik van de meanders in de winter wel duidelijk. Toch zal ook dit element meegenomen worden in een meer gedetailleerde bespreking van een aantal bevers onder VERWIJZING.
+Ook hier zorgt de vaak ongelijke verspreiding van datapunten in de tijd en ruimte over de  verschillende bevers voor wat onduidelijkheid maar lijkt de algemene trend van een verhoogd gebruik van de meanders in de winter wel duidelijk. Toch zal ook dit element meegenomen worden in een meer gedetailleerde bespreking van een aantal bevers onder \@ref(h:casussen).
 
 
 ##Casussen {#h:casussen}
 
-###Territorium Muizen-Rijmenam
+###Territorium Muizen-Rijmenam, Dijle {#h:terr1}
 
-```{r dataTerr1, echo=FALSE}
-dataTerr1 <- subset(HRdata2 , Bever=="BE1003" | Bever=="BE1009")
-dataTerr1 <- as.data.frame(dataTerr1@data)
-dataTerr1$Terr <- 1
-dataTerr2 <- subset(HRdata2 , Bever=="BE1005" | Bever=="BE1015")
-dataTerr2 <- as.data.frame(dataTerr2@data)
-dataTerr2$Terr <- 2
-dataTerr3 <- subset(HRdata2 , Bever=="BE1012")
-dataTerr3 <- as.data.frame(dataTerr3@data)
-dataTerr3$Terr <- 3
-dataTerr <- rbind(dataTerr1,dataTerr2,dataTerr3)
-dataTerr$Meander <- "nee"
-dataTerr$Meander[!is.na(dataTerr$polygon_id)] <- "ja"
-dataTerr$'In Meander' <- factor(dataTerr$Meander)
-
-ggplot(subset(dataTerr, !is.na(Maand)), aes(x=factor(Maand), fill=`In Meander`)) + 
-  ylab("Aantal waarnemingen") +
-  geom_bar(position= "stack") +
-  facet_wrap(~Terr)
-```
+Binnen het territorium op de Dijle tussen Muizen en Rijmenam konden twee verschillende bevers (BE1003 en BE1009) langere tijd worden opgevolgd (zie ook \@ref(tab:tabZenderbevers)). In totaal waren beide bevers goed voor `r sum(Zendertabel$Aantal[Zendertabel$Bever=="BE1003"|Zendertabel$Bever=="BE1009"])` waarnemingen over een periode van `r max(Zendertabel$dagen[Zendertabel$Bever=="BE1003"|Zendertabel$Bever=="BE1009"])` dagen. Beide bevers, van wie individueel het geslacht niet werd bepaald, vormden gedurende die periode een koppel dat zijn hoofdburcht had op een de grootste van beide frequent bezochte meanders langs de noordzijde van de Dijle (zie Fig. \@ref(fig:figTerr1)). Het territorium van beide bevers strekte zich strikt uit tussen de brug ter hoogte van de Brugstraat in Muizen en die ter hoogte van de Brugstraat in Rijmenam. Tijdens die periode werden slechts vier waarnemingen buiten dit territorium op de Dijle gedaan, naast zes waarnemingen op zijbeken van de Dijle (Weesbeek en Leibeek).  Elk van deze vastgestelde verdere verplaatsingen werden telkens door dezelfde bever (BE1003) gedaan (zie ook Fig. \@ref(fig:figMCPkaart). Met uitzondering van twee verplaatsingen net voorbij de territoriumgrens in de zomer vonden elk van deze verplaatsingen plaats in de herfst. Uit Tab \@ref(tab:tabseizoenranges) blijkt dat verder dat de grootte van de home range van bever BE1003 in de lente- en zomermaanden inderdaad aanzienlijk kleiner was dan tijdens de herfst en winter. Fig. \@ref(fig:figTerr1) toont een sterk gebruik van twee bijeen gelegen meanders in elk seizoen, met de aanleg van burchten in elk van beide. Andere meanders binnen dit territorium waren niet bereikbaar voor bevers en werden op geen enkel moment gebruikt. Tijdens beide inventarisaties in 2017 werden in dit territorium enkel wissels vastgesteld, geen dagrustplaatsen of holen (Fig. \@ref(fig:kaartapril), Fig. \@ref(fig:kaartaugustus).
 
 
 ```{r figTerr1, fig.cap="Datapunten per seizoen voor twee bevers uit het territorium op de Dijle tussen Muizen en Rijmenam", echo=FALSE}
@@ -277,17 +261,21 @@ Terr1$Seizoen[Terr1$Maand>3 & Terr1$Maand<7] <- "Lente"
 Terr1$Seizoen[Terr1$Maand>6 & Terr1$Maand<10] <- "Zomer"
 Terr1$Seizoen[Terr1$Maand>9] <- "Herfst"
 
-pal  <- colorFactor(palette=c("green","red","blue","hotpink"), domain=Terr2$Seizoen)
+pal  <- colorFactor(palette=c("green","red","blue","hotpink"), domain=Terr1$Seizoen)
 
-leaflet(Terr1)%>%
+leaflet(subset(Terr1,!is.na(Seizoen)))%>%
   addTiles()%>%
-  addCircleMarkers(color=~pal(Seizoen), radius=5, fillOpacity = 1, stroke = F)
+  addCircleMarkers(color=~pal(Seizoen), radius = 5,
+                   fillOpacity = 1, stroke = F) %>%
+  addLegend(pal = pal, values=~Seizoen)
 ``` 
 
-###Territorium Rijmenam-Haacht
+###Territorium Rijmenam-Haacht, Dijle {#h:terr2}
+
+Een tweede territorium waarbinnen bevers voor langere tijd konden worden opgevolgd grenst aan het eerste territorium (\@ref(h:terr1)) op de Dijle en strekt zich uit van Rijmenam tot Haacht. Binnen dit territorium konden opnieuw vier verschillende bevers worden opgevolgd, waarvan twee gedurende een volledig jaar tijdens dezelfde periode (BE1005 en BE1015) (zie ook \@ref(tab:tabZenderbevers)). In totaal waren beide bevers goed voor `r sum(Zendertabel$Aantal[Zendertabel$Bever=="BE1005"|Zendertabel$Bever=="BE1015"])` waarnemingen over een periode van `r max(Zendertabel$dagen[Zendertabel$Bever=="BE1005"|Zendertabel$Bever=="BE1015"])` dagen. Van Bever BE1015 was gekend dat het een vrouwtje dat gedurende deze periode een koppel vormde met Bever BE1005. De hoofdburcht van dit koppel bevond zich op de meander aan de zuidelijke zijde van de Dijle aan het einde van de Hoogdonk in Haacht (zie Fig. \@ref(fig:figTerr2)). Het territorium van beide bevers strekte zich van de brug ter hoogte van de Brugstraat in Rijmenam tot iets voorbij de brug van de Haachtsebaan in Haacht, maat met het zwaartepunt in de westelijke zone van dit territorium. Ook hier was de home range grootte van één van beide bevers, in dit geval het mannetje BE1005, in de herfst en winter aanzienlijk groter dan tijdens de lente en zomer, terwijl de home range grootte van de andere bever veel minder variatie vertoonde doorheen het jaar (Tab. \@ref(tab:tabseizoenranges)). Fig. \@ref(fig:figTerr2) toont ook in dit territorium een sterk gebruik van een grote meander. Toch is het verschil met het gedrag vastgesteld in territorium 1 dat deze meander gedurende de zomer droog kwam te liggen zodat de meander in de zomer en herfst zo goed als niet werd gebruikt. Een verder oostelijk gelegen grote meander in dit gebied, die is ingericht als visvijver en niet wordt omgeven door bomen, werd slechts heel sporadisch bezocht en ook niet tijdens de periode dat de andere meander droog kwam te liggen. Tijdens de inventarisaties in 2017 werden in dit territorium, zowel in april als augustus, naast wissels telkens 1 hol en verschillende dagrustplaatsen vastgesteld (Fig. \@ref(fig:kaartapril), Fig. \@ref(fig:kaartaugustus).
 
 ```{r figTerr2, fig.cap="Datapunten per seizoen voor twee bevers uit het territorium op de Dijle tussen Rijmenam en Haacht", echo=FALSE}
-Terr2 <- subset(HRdata , Bever=="BE1005" | Bever=="BE1006")
+Terr2 <- subset(HRdata , Bever=="BE1005" | Bever=="BE1015")
 Terr2$Maand <- month(Terr2$Datumkort) 
 Terr2$Seizoen[Terr2$Maand<4] <- "Winter"
 Terr2$Seizoen[Terr2$Maand>3 & Terr2$Maand<7] <- "Lente"
@@ -302,7 +290,9 @@ leaflet(Terr2)%>%
   addLegend(pal = pal, values=~Seizoen)
 ```
 
-###Territorium Heikant
+###Territorium Heikant-Betekom, Demer {#h:terr3}
+
+In een laatste territorium konden we de mannelijke bever BE1012 langer dan een volledig jaar volgen (zie ook \@ref(tab:tabZenderbevers)). De home range van deze bever bevond zich op de Demer in de gemeente Betekom en strekte zich hoofdzakelijk uit van de aan de zuidelijke oever ter hoogte van de Blaashoek gelegen meander tot aan de brug van de Begijnendijksesteenweg (Fig. \@ref(h:terr3)). Van deze bever konden `r Zendertabel$Aantal[Zendertabel$Bever=="BE1012"]` waarnemingen worden gedaan over een periode van `r Zendertabel$dagen[Zendertabel$Bever=="BE1012"]` dagen. De meeste locatiebepalingen van deze bever bevonden zich op de meander waar de burcht zich bevond en dat was het geval in elk seizoen. De grootte van de home range in de wintermaanden en zomermaanden vertoonde voor deze bever dan ook weinig verschil (Tab. \@ref(tab:tabseizoenranges)).
 
 ```{r figTerr3, fig.cap="Datapunten per seizoen voor een bever uit het territorium op de Demer ter hoogte van Heikant", echo=FALSE}
 Terr3 <- subset(HRdata , Bever=="BE1012")
@@ -314,8 +304,35 @@ Terr3$Seizoen[Terr3$Maand>9] <- "Herfst"
 
 pal  <- colorFactor(palette=c("green","red","blue","hotpink"), domain=Terr3$Seizoen)
 
-leaflet(Terr3)%>%
-  addTiles()%>%
+leaflet(Terr3) %>%
+  addTiles() %>%
   addCircleMarkers(color=~pal(Seizoen), radius=7, fillOpacity = 1, stroke = F) %>% 
   addLegend(pal = pal, values=~Seizoen)
+```
+
+###Overzicht meandergebruik casussen {#h:terr3}
+
+Fig. \@ref(h:terr3) geeft de verdeling van waarnemingen binnen en buiten de meanders weer per maand voor elk van de drie, hierboven besproken, territoria. Daarin is duidelijk, dat, los van de ongelijke verdeling van het totaal aantal waarnemingen per maand, de meanders in elk seizoen een belangrijk onderdeel van de territoria vormen. Het feit dat in elk van deze territoria ook de hoodburchten waar de voortplanting plaatsvindt, zich op een meander bevond onderstreept deze vaststelling. Enkel in het territorium 2 (Dijle tussen Rijmenam en Haacht), waar de meander in de zomermaanden tot in de herfst droog komt te liggen, valt op dat het gebruik van de aanwezige meander enkele maanden totaal wegvalt, zeker gelet op het hoog aantal gegevens in de maand oktober, die aantonen dat deze observatie geen artefact als gevolg van beperkte beschikbare gegevens is.
+
+```{r dataTerr1, fig.cap="Verdeling per maand van de waarnemingen van bevers op en buiten de aanwezige meanders in de drie verschillende territoria.", echo=FALSE}
+dataTerr1 <- subset(HRdata2 , Bever=="BE1003" | Bever=="BE1009")
+dataTerr1 <- as.data.frame(dataTerr1@data)
+dataTerr1$Terr <- 1
+dataTerr2 <- subset(HRdata2 , Bever=="BE1005" | Bever=="BE1015")
+dataTerr2 <- as.data.frame(dataTerr2@data)
+dataTerr2$Terr <- 2
+dataTerr3 <- subset(HRdata2 , Bever=="BE1012")
+dataTerr3 <- as.data.frame(dataTerr3@data)
+dataTerr3$Terr <- 3
+dataTerr <- rbind(dataTerr1,dataTerr2,dataTerr3)
+dataTerr$Meander <- "nee"
+dataTerr$Meander[!is.na(dataTerr$polygon_id)] <- "ja"
+dataTerr$'Op Meander' <- factor(dataTerr$Meander)
+
+ggplot(subset(dataTerr, !is.na(Maand)), aes(x=factor(Maand), fill=`Op Meander`)) + 
+  ylab("Aantal waarnemingen") +
+  xlab("Maand") +
+  labs(fill = "Op Meander") +
+  geom_bar(position= "stack") +
+  facet_wrap(~Terr)
 ```
