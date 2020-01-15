@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.14159265-2.6-0.99999 (TeX Live 2018/W32TeX) (preloaded format=xelatex 2019.4.24)  14 JAN 2020 21:10
+This is XeTeX, Version 3.14159265-2.6-0.99999 (TeX Live 2018/W32TeX) (preloaded format=xelatex 2019.4.24)  15 JAN 2020 16:42
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1412,7 +1412,7 @@ Package marginnote Warning: Consecutive odd pages found.
 (marginnote)                changing the page numbering on page 1.
 
 Package marginnote Info: Using workaround for absolute page number on input lin
-e 49.
+e 51.
 [2
 
 ] [3
@@ -1420,8 +1420,6 @@ e 49.
 ] [4
 
 ] [5
-
-] [6
 
 ] (./RapportBevertelemetrie.toc
 LaTeX Font Info:    Calculating math sizes for size <11> on input line 2.
@@ -1441,7 +1439,7 @@ LaTeX Font Warning: Font shape `OMS/cmsy/m/n' in size <5.5> not available
 \tf@toc=\write5
 \openout5 = `RapportBevertelemetrie.toc'.
 
-[7
+[6
 
 ] (./RapportBevertelemetrie.lof)
 \tf@lof=\write6
@@ -1451,32 +1449,40 @@ LaTeX Font Warning: Font shape `OMS/cmsy/m/n' in size <5.5> not available
 \tf@lot=\write7
 \openout7 = `RapportBevertelemetrie.lot'.
 
-[8
+[7
 
 ]
 Hoofdstuk 1.
-[9
+[8
 
 
-] [10]
+] [9]
 Hoofdstuk 2.
 File: afbeeldingen/Sporen.jpg Graphic file (type bmp)
 <afbeeldingen/Sporen.jpg>
-Font mapping `tex-ansi.tec' for font `[Inconsolatazi4-Regular.otf]/OT:script=la
-tn;language=DFLT;mapping=tex-ansi;' not found.
-[11
+[10
 
 ]
+
+Package natbib Warning: Citation `Rosell1998' on page 11 undefined on input lin
+e 281.
+
+Font mapping `tex-ansi.tec' for font `[Inconsolatazi4-Regular.otf]/OT:script=la
+tn;language=DFLT;mapping=tex-ansi;' not found.
+
+Package natbib Warning: Citation `Rosell1998' on page 11 undefined on input lin
+e 305.
+
 File: afbeeldingen/Bevervangst.jpg Graphic file (type bmp)
 <afbeeldingen/Bevervangst.jpg>
-[12]
+[11]
 File: afbeeldingen/Staartzenders.jpg Graphic file (type bmp)
 <afbeeldingen/Staartzenders.jpg>
-[13]
+[12]
 File: RapportBevertelemetrie_files/figure-latex/ggBezoekenMaand-1.pdf Graphic f
 ile (type pdf)
 <use RapportBevertelemetrie_files/figure-latex/ggBezoekenMaand-1.pdf>
-[14] [15]
+[13] [14] [15]
 Hoofdstuk 3.
 File: RapportBevertelemetrie_files/figure-latex/kaartapril-1.png Graphic file (
 type bmp)
@@ -1516,23 +1522,36 @@ ype pdf)
 <use RapportBevertelemetrie_files/figure-latex/dataTerr1-1.pdf>
 [25]
 Hoofdstuk 4.
+
+Package natbib Warning: Citation `Graf' on page 26 undefined on input line 1052
+.
+
 [26
 
-] (./RapportBevertelemetrie.bbl [27
+] [27] [28]
+Hoofdstuk 5.
+[29
+
+] [30
+
+] (./RapportBevertelemetrie.bbl [31
+
+])
+
+Package natbib Warning: There were undefined citations.
 
 
-]) 
 AED: lastpage setting LastPage
-[28]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 1028.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 1028.
+[32]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 1233.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 1233.
 (./RapportBevertelemetrie.aux)
-Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 1028.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 1028.
+Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 1233.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 1233.
 
 Package rerunfilecheck Info: File `RapportBevertelemetrie.out' has not changed.
 
-(rerunfilecheck)             Checksum: 6F4E46C8E42D197460085548A4EB22F9.
+(rerunfilecheck)             Checksum: 9ABC9F6CAD3C3E4073CCD13BFEDCBE1D.
 
 LaTeX Font Warning: Size substitutions with differences
 (Font)              up to 0.5pt have occurred.
@@ -1542,12 +1561,12 @@ LaTeX Warning: There were multiply-defined labels.
 
  ) 
 Here is how much of TeX's memory you used:
- 26899 strings out of 494854
- 502043 string characters out of 6173178
- 657398 words of memory out of 5000000
- 30435 multiletter control sequences out of 15000+600000
+ 26914 strings out of 494854
+ 502314 string characters out of 6173178
+ 663785 words of memory out of 5000000
+ 30450 multiletter control sequences out of 15000+600000
  538407 words of font info for 91 fonts, out of 8000000 for 9000
  54 hyphenation exceptions out of 8191
  50i,14n,81p,1211b,543s stack positions out of 5000i,500n,10000p,200000b,80000s
 
-Output written on RapportBevertelemetrie.pdf (29 pages).
+Output written on RapportBevertelemetrie.pdf (33 pages).
