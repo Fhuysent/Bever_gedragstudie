@@ -1,5 +1,5 @@
 ---
-title: "Onderzoek naar habitatgebruik van bever (_Castor fiber_) in relatie tot schadebeheer."
+title: "Onderzoek naar het habitatgebruik van bever (_Castor fiber_) in relatie tot schadebeheer"
 author: 
   - 
     name: "Frank Huysentruyt"
@@ -14,10 +14,13 @@ author:
     name: "Joris Vernaillen"
     email: "joris.vernaillen@inbo.be"
   - 
+    name: "Daniël Van Der Beeck"
+    email: "d.vanderbeeck@vmm.be" 
+  - 
     name: "Jan Vercammen"
     email: "jan.vercammen@inbo.be"
     
-subtitle: "Verkenning van het ruimtegebruik voorafgaand aan beheermaatregelen"
+subtitle: "Verkenning van het ruimtegebruik voorafgaand aan mogelijke beheermaatregelen"
 reportnr: ""
 ordernr: ""
 link-citations: TRUE
@@ -283,28 +286,35 @@ remove(i,j,k,x,y, fileName_short)
 
 # Dankwoord {-}
 
-Tekst.
+Dit onderzoek gebeurde in opdracht van De Vlaamse Waterweg nv. We willen hen expliciet bedanken voor het vertrouwen in het INBO voor het uitvoeren van deze opdracht. Een samenwerking als deze laat ons ook toe het perspectief van het technisch beheer van de waterlopen in Vlaanderen van nabij te leren kennen zodat deze elementen beter in rekening kunnen worden gebracht bij toekomstige afwegingen rond het beheer van biodiversiteit in en rond grote waterlopen waar het INBO in het algemeen en het team _Faunabeheer en Invasieve Soorten_ bij betrokken zou worden.
+We danken iedereen bij de Vlaamse Waterweg ook die bijdroegen aan het coördineren van dit onderzoek, met hulp en ondersteuning op het terrein of met snelle antwoorden op technische vragen.
 
-# Voorwoord {-}
+Een speciaal woord van dank gaat uit naar Siege Van Ballaert, die verantwoordelijk was voor het mee opstarten van dit project. De basis die Siege daar legde zorgde voor de mooie resultaten die dit project opleverde en haar aanstekelijk enthousiasme heeft iedereen die aan dit project meewerkte zeker gemotiveerd. Siege verliet intussen het INBO voor een nieuwe uitdaging bij het Agentschap voor Natuur en Bos en we wensen haar langs deze weg alle succes in haar nieuwe carrière.
 
-Tekst. 
+Tijdens dit project konden we ook beroep doen op Miel Cnuts, die als student Agro- en Biotechnologie bij de Hogeschool PXL, zijn stage met bijhorende bachelorscriptie bij INBO uitvoerde. Het vele bijkomende veldwerk van Miel, zijn hulp bij datacontrole en -verkenning en zijn literatuurstudie droegen zeker bij aan het uiteindelijke eindresultaat van dit project.
 
+Finaal willen we graag nog onze collega's Axel Neukermans, Anneleen Rutten, Emma Cartuyvels en Kurt Schamp bedanken die bijsprongen waar nodig bij het veldwerk.
 
 # Samenvatting {-}
 
-Tekst.
-
-**Vette tekst.**
+Aan te vullen na goedkeuring inhoud.
 
 # Aanbevelingen voor beheer en/of beleid {-}
 
-Tekst.
+Dit project onderzocht, via terreinobservaties en VHF-telemetrie op welke manier bevers, die als soort aan een opmars in Vlaanderen bezig zijn, zich gedragen binnen een riviersysteem dat gevoelig is aan structurele schade door hun aanwezigheid. Het project slaagde erin de lokale bezetting van een studiegebied langs Demer en Dijle in kaart te brengen en identificeerde verschillende methoden om dit ook voor bevers op andere locaties in Vlaanderen te doen. In functie van het beheer van mogelijke structurele schade aan gevoelige waterlopen kan het project volgende aanbevelingen formuleren:
+
+1.	Naarmate de verspreiding in Vlaanderen van bever zich verder uitbreidt worden ook schijnbaar minder geschikte habitats door bevers ingenomen. Het vermijden van de aanwezigheid van bevers in een bepaalde schadegevoelige zone wordt daardoor sterk bemoeilijkt. Het is daarom aangewezen om op bredere schaal eerder voor een preventieve, schademitigerende aanpak te kiezen dan voor een aanpak die de aanwezigheid van bevers moet tegengaan. Het weren van bevers kan dan lokaal worden beperkt tot zeer schadegevoelige locaties.
+
+1.	De beheeroptie om bevers toch uit bepaalde brede zones volledig te weren vergt bijkomend onderzoek naar de omgevingsvariabelen die hiervoor verantwoordelijk zijn en op welke manier deze informatie in een beheercontext  zou kunnen worden toegepast.
+
+1.	De aanwezigheid van toegankelijke geschikte rustzones, zoals bijvoorbeeld oude meanders, kan zorgen voor een gecontroleerde aanwezigheid van bevers in een brede zone, die door territorialiteit bijkomende aanwezigheid van andere bevers in deze zone helpt voorkomen. Dergelijke rustzones bevinden zich bij voorkeur dicht bij de hoofdwaterloop, hebben een gewaarborgde waterstand, voldoende beschutting en voedsel en een minimum aan verstoring. Dit onderzoek vond ook indicaties dat de aanwezigheid van dergelijke rustzones het risico op graafschade elders in het territorium helpt verlagen. Het is daarom aangewezen om in gebieden met gekende of verwachte beveractiviteit voldoende geschikte rustzones te voorzien en de kwaliteit ervan te onderhouden.
+
 
 # English abstract {-}
 
 \benglish
 
-English text.
+Aan te vullen na goedkeuring inhoud.
 
 \eenglish
 
@@ -314,13 +324,13 @@ English text.
 
 ##Algemeen kader {#h:kader}
 
-De Europese bever, _Castor fiber_ (hierna _bever_), was ooit algemeen en wijd verspreid in Europa, maar midden 19^e^ eeuw uit Vlaanderen en grote delen van Europa door intensieve bejaging en habitatverlies [@Vanwijngaarden1966; @Nolet1988]. Door herintroductieprojecten en een toenemende bescherming van de soort nam hun aantal in Europa in de laatste decades opnieuw enorm toe en verkeert de soort momenteel in een gunstige IUCN status (_population increasing, least concern_) ([IUCN, 2019](https://www.iucnredlist.org/species/4007/115067136)).
+De Europese bever, _Castor fiber_ (hierna _bever_), was ooit algemeen en wijd verspreid in Europa, maar midden 19^e^ eeuw uit Vlaanderen en grote delen van Europa door intensieve bejaging en habitatverlies [@Vanwijngaarden1966; @Nolet1998]. Door herintroductieprojecten en een toenemende bescherming van de soort nam hun aantal in Europa in de laatste decades opnieuw enorm toe [@Halley2012; @Nolet1998] en verkeert de soort momenteel in een gunstige IUCN status (_population increasing, least concern_) ([IUCN, 2019](https://www.iucnredlist.org/species/4007/115067136)).
 
 Sinds het jaar 2000 komen ook in Vlaanderen opnieuw bevers voor, opgesplitst in twee deelpopulaties [@Verkem2003; @ANB2015]. De eerste populatie situeert zich in het Maasbekken en is het resultaat van natuurlijke areaaluitbreiding via de Maas vanuit zowel Nederland als Wallonië. De tweede populatie heeft de Dijlevallei als kerngebied,  een gevolg van clandestiene uitzettingen in dit bekken aan zowel Waalse als Vlaamse zijde [@Verkem2003; @ANB2015]. De Vlaamse populatie werd in 2013 geschat op 150 – 200 dieren [@ANB2015]. Een recente evaluatie van de monitoring van bever in Vlaanderen schatte de minimale populatie in 2014 op 70 territoria of 196 bevers, een aantal dat sterk toenam tot 159 territoria of 445 bevers in 2018 [@Huysentruyt2019]. Hiermee bevindt deze waarde zich net onder de 167 territoria die in het soortbeschermingsprogramma voor bever als gunstige staat voor instandhouding voor de soort in Vlaanderen naar voor werd geschoven [@ANB2015].  De verwachting is dat deze gunstige staat in 2019 voor Vlaanderen zal zijn bereikt.
 
-Gezien het belang van het Dijlebekken voor bevers in Vlaanderen en de recente sterke toename van de soort wordt al sinds enkele jaren hoge activiteit van bevers in het Dijlebekken vastgesteld. Waar de situatie langs de grens met Wallonië weinig risico’s inhoudt, zorgt de aanwezigheid van waterkerende dijken verder stroomafwaarts ten noorden van Leuven wel voor hogere kans op schade door bevers. Door de aanleg van holen en gangenstelsels bestaat immers het risico op schade aan deze dijken, met eventuele overstromingen van de achterliggende gebieden tot gevolg. Hierbij rijst de vraag hoe groot deze risico’s zijn en in welke mate ze beheersbaar kunnen worden gemaakt. In de regio tussen Werchter en Muizen (Vlaams-Brabant), een traject van ongeveer 15 km, vraagt de situatie in de laatste jaren stilaan om ingrepen om verdere schade te voorkomen en bestaande schade te herstellen. Deze regio werd daarom door De Vlaamse Waterweg nv (voor 2018 Waterwegen en Zeekanaal) aangeduid als een zone waarin deze situatie moest worden onderzocht en geëvalueerd. Hierbij werden in 2015 bij een verkennende inspectie 45 aantastingen door bever, verspreid over drie clusters, aan de dijken vastgesteld.
+Gezien het belang van het Dijlebekken voor bevers in Vlaanderen en de recente sterke toename van de soort wordt al sinds enkele jaren hoge activiteit van bevers in het Dijlebekken vastgesteld. Waar de situatie langs de grens met Wallonië weinig risico’s inhoudt, zorgt de aanwezigheid van waterkerende dijken verder stroomafwaarts ten noorden van Leuven wel voor hogere kans op schade door bevers. Door de aanleg van holen en gangenstelsels bestaat immers het risico op schade aan deze dijken, met eventuele overstromingen van de achterliggende gebieden tot gevolg. Hierbij rijst de vraag hoe groot deze risico’s zijn en in welke mate ze beheersbaar kunnen worden gemaakt. In de regio tussen Werchter en Muizen (Vlaams-Brabant), een traject van ongeveer 15 km, vraagt de situatie in de laatste jaren stilaan om ingrepen om verdere schade te voorkomen en bestaande schade te herstellen. Deze regio werd daarom door De Vlaamse Waterweg nv (voor 2018 Waterwegen en Zeekanaal) aangeduid als een zone waarin deze situatie moest worden onderzocht en geëvalueerd. Tijdens een verkennende inspectie in deze regio in 2015 stelde De Vlaamse Waterweg nv 45 aantastingen  door bever vast, verspreid over drie clusters.
 
-Om meer inzicht te krijgen op de omvang van deze aantastingen, de aanwezigheid van bevers in het gebied en de manier waarop de bevers van dit gebied gebruik maken werd in 2017 een project in samenwerking met INBO opgestart. Dorheen het project werd het studiegebied verder uitgebreid op de Demer tot Betekom, goed voor een studiegebied met een rivierlengte van ongeveer 20 km. Dit onderzoek werd in 2019 afgerond en de bevindingen ervan vormen de inhoud van dit rapport.
+Om meer inzicht te krijgen op de omvang van deze aantastingen, de aanwezigheid van bevers in het gebied en de manier waarop de bevers van dit gebied gebruik maken werd in 2017 een project in samenwerking met INBO opgestart. Doorheen het project werd het studiegebied verder uitgebreid op de Demer tot Betekom, goed voor een studiegebied met een rivierlengte van ongeveer 20 km. Dit onderzoek werd in 2019 afgerond en de bevindingen ervan vormen de inhoud van dit rapport.
 
 ##Doelstellingen {#h:doelstellingen}
 

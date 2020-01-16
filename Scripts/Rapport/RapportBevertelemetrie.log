@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.14159265-2.6-0.99999 (TeX Live 2018/W32TeX) (preloaded format=xelatex 2019.4.24)  15 JAN 2020 16:42
+This is XeTeX, Version 3.14159265-2.6-0.99999 (TeX Live 2018/W32TeX) (preloaded format=xelatex 2019.4.24)  16 JAN 2020 19:17
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1222,39 +1222,35 @@ Package: placeins 2005/04/18  v 2.2
 (c:/Users/frank_huysentruyt/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/parski
 p/parskip.sty
 Package: parskip 2019-01-16 v2.0c non-zero parskip adjustments
-)) (./RapportBevertelemetrie.aux
-
-LaTeX Warning: Label `h:terr3' multiply defined.
-
-)
+)) (./RapportBevertelemetrie.aux)
 \openout1 = `RapportBevertelemetrie.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 40.
-LaTeX Font Info:    ... okay on input line 40.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 40.
-LaTeX Font Info:    ... okay on input line 40.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 40.
-LaTeX Font Info:    ... okay on input line 40.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 40.
-LaTeX Font Info:    ... okay on input line 40.
-LaTeX Font Info:    Checking defaults for TU/lmr/m/n on input line 40.
-LaTeX Font Info:    ... okay on input line 40.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 40.
-LaTeX Font Info:    ... okay on input line 40.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 40.
-LaTeX Font Info:    ... okay on input line 40.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 40.
-LaTeX Font Info:    ... okay on input line 40.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 40.
-LaTeX Font Info:    ... okay on input line 40.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 40.
-LaTeX Font Info:    Try loading font information for TS1+cmr on input line 40.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 41.
+LaTeX Font Info:    ... okay on input line 41.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 41.
+LaTeX Font Info:    ... okay on input line 41.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 41.
+LaTeX Font Info:    ... okay on input line 41.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 41.
+LaTeX Font Info:    ... okay on input line 41.
+LaTeX Font Info:    Checking defaults for TU/lmr/m/n on input line 41.
+LaTeX Font Info:    ... okay on input line 41.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 41.
+LaTeX Font Info:    ... okay on input line 41.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 41.
+LaTeX Font Info:    ... okay on input line 41.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 41.
+LaTeX Font Info:    ... okay on input line 41.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 41.
+LaTeX Font Info:    ... okay on input line 41.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 41.
+LaTeX Font Info:    Try loading font information for TS1+cmr on input line 41.
 
 (c:/Users/frank_huysentruyt/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/base/t
 s1cmr.fd
 File: ts1cmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
-LaTeX Font Info:    ... okay on input line 40.
+LaTeX Font Info:    ... okay on input line 41.
 *geometry* driver: auto-detecting
 *geometry* detected driver: xetex
 *geometry* verbose mode - [ preamble ] result:
@@ -1290,7 +1286,7 @@ LaTeX Font Info:    ... okay on input line 40.
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
 \AtBeginShipoutBox=\box63
-Package hyperref Info: Link coloring ON on input line 40.
+Package hyperref Info: Link coloring ON on input line 41.
 
 (c:/Users/frank_huysentruyt/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/hyperr
 ef/nameref.sty
@@ -1302,18 +1298,18 @@ Package: gettitlestring 2016/05/16 v1.5 Cleanup title references (HO)
 )
 \c@section@level=\count347
 )
-LaTeX Info: Redefining \ref on input line 40.
-LaTeX Info: Redefining \pageref on input line 40.
-LaTeX Info: Redefining \nameref on input line 40.
+LaTeX Info: Redefining \ref on input line 41.
+LaTeX Info: Redefining \pageref on input line 41.
+LaTeX Info: Redefining \nameref on input line 41.
 (./RapportBevertelemetrie.out) (./RapportBevertelemetrie.out)
 \@outlinefile=\write4
 \openout4 = `RapportBevertelemetrie.out'.
 
-LaTeX Info: Redefining \dots on input line 40.
-LaTeX Info: Redefining \up on input line 40.
+LaTeX Info: Redefining \dots on input line 41.
+LaTeX Info: Redefining \up on input line 41.
 Package lastpage Info: Please have a look at the pageslts package at
 (lastpage)             https://www.ctan.org/pkg/pageslts
-(lastpage)             ! on input line 40.
+(lastpage)             ! on input line 41.
 File: logo_nl_verticaal_kleur.pdf Graphic file (type pdf)
 <use logo_nl_verticaal_kleur.pdf>
 
@@ -1384,7 +1380,7 @@ ce=0.0].
 0.014;letterspace=0.0;+smcp;mapping=tex-text;"
 
 
-Overfull \hbox (1.50714pt too wide) in paragraph at lines 41--41
+Overfull \hbox (1.50714pt too wide) in paragraph at lines 42--42
 [] []  
  []
 
@@ -1412,14 +1408,12 @@ Package marginnote Warning: Consecutive odd pages found.
 (marginnote)                changing the page numbering on page 1.
 
 Package marginnote Info: Using workaround for absolute page number on input lin
-e 51.
+e 81.
 [2
 
 ] [3
 
 ] [4
-
-] [5
 
 ] (./RapportBevertelemetrie.toc
 LaTeX Font Info:    Calculating math sizes for size <11> on input line 2.
@@ -1439,7 +1433,7 @@ LaTeX Font Warning: Font shape `OMS/cmsy/m/n' in size <5.5> not available
 \tf@toc=\write5
 \openout5 = `RapportBevertelemetrie.toc'.
 
-[6
+[5
 
 ] (./RapportBevertelemetrie.lof)
 \tf@lof=\write6
@@ -1449,40 +1443,38 @@ LaTeX Font Warning: Font shape `OMS/cmsy/m/n' in size <5.5> not available
 \tf@lot=\write7
 \openout7 = `RapportBevertelemetrie.lot'.
 
-[7
+[6
 
 ]
 Hoofdstuk 1.
-[8
+[7
 
 
-] [9]
+] [8]
 Hoofdstuk 2.
 File: afbeeldingen/Sporen.jpg Graphic file (type bmp)
 <afbeeldingen/Sporen.jpg>
-[10
+[9
 
 ]
-
-Package natbib Warning: Citation `Rosell1998' on page 11 undefined on input lin
-e 281.
-
 Font mapping `tex-ansi.tec' for font `[Inconsolatazi4-Regular.otf]/OT:script=la
 tn;language=DFLT;mapping=tex-ansi;' not found.
-
-Package natbib Warning: Citation `Rosell1998' on page 11 undefined on input lin
-e 305.
-
 File: afbeeldingen/Bevervangst.jpg Graphic file (type bmp)
 <afbeeldingen/Bevervangst.jpg>
-[11]
+[10]
 File: afbeeldingen/Staartzenders.jpg Graphic file (type bmp)
 <afbeeldingen/Staartzenders.jpg>
-[12]
+[11]
 File: RapportBevertelemetrie_files/figure-latex/ggBezoekenMaand-1.pdf Graphic f
 ile (type pdf)
 <use RapportBevertelemetrie_files/figure-latex/ggBezoekenMaand-1.pdf>
-[13] [14] [15]
+[12]
+Overfull \hbox (7.172pt too wide) in paragraph at lines 523--543
+\TU/Calibri(0)/m/n/10 verdedigd en waarvan de grenzen met geursporen worde gema
+rkeerd ([][]Campbell et al[][], [][]2005[][]; [][]Müller-Schwarze
+ []
+
+[13] [14]
 Hoofdstuk 3.
 File: RapportBevertelemetrie_files/figure-latex/kaartapril-1.png Graphic file (
 type bmp)
@@ -1490,9 +1482,9 @@ type bmp)
 File: RapportBevertelemetrie_files/figure-latex/kaartaugustus-1.png Graphic fil
 e (type bmp)
 <RapportBevertelemetrie_files/figure-latex/kaartaugustus-1.png>
-[16
+[15
 
-] [17]
+] [16]
 File: RapportBevertelemetrie_files/figure-latex/figruwedata-1.png Graphic file 
 (type bmp)
 <RapportBevertelemetrie_files/figure-latex/figruwedata-1.png>
@@ -1501,72 +1493,68 @@ tn;language=DFLT;mapping=tex-ansi;' not found.
 File: RapportBevertelemetrie_files/figure-latex/figpercentage-1.pdf Graphic fil
 e (type pdf)
 <use RapportBevertelemetrie_files/figure-latex/figpercentage-1.pdf>
-[18] [19]
+[17] [18]
+
+LaTeX Warning: Reference `tab:seizoenranges' on page 19 undefined on input line
+ 800.
+
 File: RapportBevertelemetrie_files/figure-latex/figMCPkaart-1.png Graphic file 
 (type bmp)
 <RapportBevertelemetrie_files/figure-latex/figMCPkaart-1.png>
-[20] [21]
-File: RapportBevertelemetrie_files/figure-latex/figTerr1-1.png Graphic file (ty
+[19] [20]
+File: RapportBevertelemetrie_files/figure-latex/figterr1-1.png Graphic file (ty
 pe bmp)
-<RapportBevertelemetrie_files/figure-latex/figTerr1-1.png>
-[22]
-File: RapportBevertelemetrie_files/figure-latex/figTerr2-1.png Graphic file (ty
+<RapportBevertelemetrie_files/figure-latex/figterr1-1.png>
+[21]
+File: RapportBevertelemetrie_files/figure-latex/figterr2-1.png Graphic file (ty
 pe bmp)
-<RapportBevertelemetrie_files/figure-latex/figTerr2-1.png>
-File: RapportBevertelemetrie_files/figure-latex/figTerr3-1.png Graphic file (ty
+<RapportBevertelemetrie_files/figure-latex/figterr2-1.png>
+File: RapportBevertelemetrie_files/figure-latex/figterr3-1.png Graphic file (ty
 pe bmp)
-<RapportBevertelemetrie_files/figure-latex/figTerr3-1.png>
-[23] [24]
-File: RapportBevertelemetrie_files/figure-latex/dataTerr1-1.pdf Graphic file (t
-ype pdf)
-<use RapportBevertelemetrie_files/figure-latex/dataTerr1-1.pdf>
-[25]
+<RapportBevertelemetrie_files/figure-latex/figterr3-1.png>
+[22] [23]
+File: RapportBevertelemetrie_files/figure-latex/figmeanders-1.pdf Graphic file 
+(type pdf)
+<use RapportBevertelemetrie_files/figure-latex/figmeanders-1.pdf>
+[24]
 Hoofdstuk 4.
+[25
 
-Package natbib Warning: Citation `Graf' on page 26 undefined on input line 1052
-.
-
-[26
-
-] [27] [28]
+] [26] [27]
 Hoofdstuk 5.
-[29
+[28
 
-] [30
+] [29] [30
 
 ] (./RapportBevertelemetrie.bbl [31
 
-])
-
-Package natbib Warning: There were undefined citations.
-
-
+]) 
 AED: lastpage setting LastPage
 [32]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 1233.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 1233.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 1402.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 1402.
 (./RapportBevertelemetrie.aux)
-Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 1233.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 1233.
+Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 1402.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 1402.
 
 Package rerunfilecheck Info: File `RapportBevertelemetrie.out' has not changed.
 
-(rerunfilecheck)             Checksum: 9ABC9F6CAD3C3E4073CCD13BFEDCBE1D.
+(rerunfilecheck)             Checksum: E218BA580CADEAE5BB692540C1A2CD92.
 
 LaTeX Font Warning: Size substitutions with differences
 (Font)              up to 0.5pt have occurred.
 
 
-LaTeX Warning: There were multiply-defined labels.
+LaTeX Warning: There were undefined references.
 
  ) 
 Here is how much of TeX's memory you used:
- 26914 strings out of 494854
- 502314 string characters out of 6173178
- 663785 words of memory out of 5000000
- 30450 multiletter control sequences out of 15000+600000
+ 26927 strings out of 494854
+ 502575 string characters out of 6173178
+ 657983 words of memory out of 5000000
+ 30463 multiletter control sequences out of 15000+600000
  538407 words of font info for 91 fonts, out of 8000000 for 9000
  54 hyphenation exceptions out of 8191
- 50i,14n,81p,1211b,543s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 50i,14n,81p,1211b,540s stack positions out of 5000i,500n,10000p,200000b,80000s
 
 Output written on RapportBevertelemetrie.pdf (33 pages).
