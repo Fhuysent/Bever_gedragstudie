@@ -85,7 +85,7 @@ Al deze gegevens zijn informatief, maar voor de verdere verwerking wordt enkel g
 Dit zorgde ervoor dat `r length(Zendertabel$Bever[Zendertabel$Aantal>9 & Zendertabel$dagen>30])` van de `r length(unique(levels(Zenderbevers$Bever)))` gezenderde bevers geschikt waren voor verdere analyse. Tabel \@ref(tab:tabZenderbevers) leert dat van de 
 `r length(unique(levels(Zenderbevers$Bever))) - (length(Zendertabel$Bever[Zendertabel$Aantal>9 & Zendertabel$dagen>30]))` uit de dataset verwijderde bevers,
 er
-`r length(Zendertabel$Bever[Zendertabel$Aantal<6])` zelfs vijf of minder datapunten hadden opgeleverd. Verder toont Tabel \@ref(tab:tabZenderbevers) dat door het verwijderen van deze bevers ook de meest extreme waarden in maximaal waargenomen afstand tussen twee punten werden verwijderd. Dit is logisch voor de bevers die geen data opleverden, maar zorgt er ook voor dat de twee hoogst vastgestelde afstanden uit de dataset verdwijnen. In beide gevallen gaat het dan ook vermoedelijk om bevers die zich niet vast of niet voor langere tijd in het studiegebied bevonden. Dit zorgt er in zijn geheel voor dat de gemiddelde afstand van `r round(mean(Zendertabel$maxdist)/1000,digits=2)` ± `r round(sd(Zendertabel$maxdist)/1000,digits=2)` km voor de volledige dataset wordt bijgesteld tot `r round(mean(Zendertabel$maxdist[Zendertabel$dagen>30 & Zendertabel$Aantal>9])/1000,digits=2)` ± `r round(sd(Zendertabel$maxdist[Zendertabel$dagen>30 & Zendertabel$Aantal>9])/1000,digits=2)` km.
+`r length(Zendertabel$Bever[Zendertabel$Aantal<6])` zelfs 5 of minder datapunten hadden opgeleverd. Verder toont Tabel \@ref(tab:tabZenderbevers) dat door het verwijderen van deze bevers ook de meest extreme waarden in maximaal waargenomen afstand tussen twee punten werden verwijderd. Dit is logisch voor de bevers die geen data opleverden, maar zorgt er ook voor dat de twee hoogst vastgestelde afstanden uit de dataset verdwijnen. In beide gevallen gaat het dan ook vermoedelijk om bevers die zich niet vast of niet voor langere tijd in het studiegebied bevonden. Dit zorgt er in zijn geheel voor dat de gemiddelde afstand van `r round(mean(Zendertabel$maxdist)/1000,digits=2)` ± `r round(sd(Zendertabel$maxdist)/1000,digits=2)` km voor de volledige dataset wordt bijgesteld tot `r round(mean(Zendertabel$maxdist[Zendertabel$dagen>30 & Zendertabel$Aantal>9])/1000,digits=2)` ± `r round(sd(Zendertabel$maxdist[Zendertabel$dagen>30 & Zendertabel$Aantal>9])/1000,digits=2)` km.
 
 ##Analyse {#h:analyse}
 
@@ -241,6 +241,7 @@ In totaal werden `r sum(TabelMeanders$waarnemingen)` locatiebepalingen weerhoude
 
 Ook hier zorgt de vaak ongelijke verspreiding van datapunten in de tijd en ruimte over de  verschillende bevers voor wat onduidelijkheid maar lijkt de algemene trend van een verhoogd gebruik van de meanders in de winter wel duidelijk. Dit element zal ook meegenomen worden in een meer gedetailleerde bespreking van een aantal bevers onder \@ref(h:casussen).
 
+\newpage
 
 ##Casussen {#h:casussen}
 
