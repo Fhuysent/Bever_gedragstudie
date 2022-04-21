@@ -1,0 +1,42 @@
+---
+title: "Data"
+author: "Frank Huysentruyt"
+date: "21-4-2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(leaflet)
+```
+
+## Inlezen Gegevens
+
+In het project werden een aantal bevers gezenderd en via telemetrie opgevolgd. Elk van deze bevers kreeg daarbij zowel een VHF als Akoestische zender. De VHF zenders leveren manuele locatiebepalingen met behulp van antennes op, akoestische zenders leveren automatische locaties op ter hoogte van vaste receivers.
+
+De gegevens van de verschillende databronnen worden als volgt gecompileerd:
+- *AKOdata*: gegevens akoestische receivers
+- *VHFdata*
+
+```{r data inlezen, include=FALSE}
+fileNames <- Sys.glob("../Input/Akoestiek/*.csv")
+AKOdata <- NULL
+#samenvoegen gegevens met verwijderen van eventuele dubbels ontstaan door niet wissen tussen uitlezen
+for (fileName in fileNames) {
+  AKOdata <- unique(rbind(AKOdata, read.csv(fileName, header=TRUE, sep=,)))
+}
+remove(fileName, fileNames)
+colnames(AKOdata)[1] <- "Date"
+AKOdata <- AKOdata[,c(1:3,8)]
+AKOdata$Date <- as.POSIXlt(AKOdata$Date)
+AKOdata$Dateshort <- as.Date(AKOdata$Date)
+```
+
+## Akoestische data
+Plot met looptijden per toponiem van receiverposities.
+
+```{r akoestiek, echo=FALSE}
+ggplot(AKOdata, aes(x=Dateshort,y=Station.Name)) + geom_point()
+```
+
