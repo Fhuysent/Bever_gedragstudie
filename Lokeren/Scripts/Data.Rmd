@@ -34,7 +34,7 @@ AKOdata$Dateshort <- as.Date(AKOdata$Date)
 ```
 
 ## Akoestische data
-Plot met looptijden per toponiem van receiverposities.
+Plot met looptijden per plaatsnaam van de verschillende receiverposities.
 
 ```{r akoestiek, echo=FALSE}
 ggplot(AKOdata, aes(x=Dateshort,y=Station.Name)) + geom_point()
