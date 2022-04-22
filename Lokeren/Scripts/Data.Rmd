@@ -9,6 +9,7 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(leaflet)
+library(lubridate)
 ```
 
 ## Inlezen Gegevens
@@ -16,21 +17,36 @@ library(leaflet)
 In het project werden een aantal bevers gezenderd en via telemetrie opgevolgd. Elk van deze bevers kreeg daarbij zowel een VHF als Akoestische zender. De VHF zenders leveren manuele locatiebepalingen met behulp van antennes op, akoestische zenders leveren automatische locaties op ter hoogte van vaste receivers.
 
 De gegevens van de verschillende databronnen worden als volgt gecompileerd:
-- *AKOdata*: gegevens akoestische receivers
+- *AKOdata*: gegevens akoestische receivers uit csv-bestanden met deployments en met detecties
 - *VHFdata*
 
 ```{r data inlezen, include=FALSE}
+#deployments inlezen
+AKOdep <- read.csv("../Input/Akoestiek/Deployments/ETN-deployments.csv", header=TRUE, sep=,)
+#alle deployments en recoveries op de middag zetten (misschien nog vervangen door exacte uur)
+AKOdep$deployDateTime <- as.POSIXlt(as.Date(AKOdep$deployDateTime))+43200
+AKOdep$recoverDateTime[AKOdep$recoverDateTime==""] <- as.character(Sys.time())
+AKOdep$recoverDateTime <- as.POSIXlt(as.Date(AKOdep$recoverDateTime))+43200
+
+#detecties inlezen
 fileNames <- Sys.glob("../Input/Akoestiek/*.csv")
-AKOdata <- NULL
-#samenvoegen gegevens met verwijderen van eventuele dubbels ontstaan door niet wissen tussen uitlezen
+AKOdet <- NULL
+##samenvoegen gegevens met verwijderen van eventuele dubbels ontstaan door niet wissen tussen uitlezen
 for (fileName in fileNames) {
-  AKOdata <- unique(rbind(AKOdata, read.csv(fileName, header=TRUE, sep=,)))
+  AKOdet <- unique(rbind(AKOdet, read.csv(fileName, header=TRUE, sep=,)))
 }
 remove(fileName, fileNames)
-colnames(AKOdata)[1] <- "Date"
-AKOdata <- AKOdata[,c(1:3,8)]
-AKOdata$Date <- as.POSIXlt(AKOdata$Date)
-AKOdata$Dateshort <- as.Date(AKOdata$Date)
+
+colnames(AKOdet)[1] <- "Date"
+AKOdet$Date <- as.POSIXlt(AKOdet$Date)
+
+#merge alle niet volledig NA kolommen
+not_all_na <- function(x) any(!is.na(x))
+AKOdata <- AKOdet %>% 
+  inner_join(AKOdep, by = c("Receiver"="receiver")) %>% 
+  select(where(not_all_na)) %>% 
+  filter(Date>deployDateTime & Date<recoverDateTime)
+
 ```
 
 ## Akoestische data
