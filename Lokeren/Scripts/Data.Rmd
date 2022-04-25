@@ -46,13 +46,46 @@ AKOdata <- AKOdet %>%
   inner_join(AKOdep, by = c("Receiver"="receiver")) %>% 
   select(where(not_all_na)) %>% 
   filter(Date>deployDateTime & Date<recoverDateTime)
+remove(not_all_na)
 
+AKOdep_all <- NULL
+for (Station in AKOdep$stationName) {
+  
+  tmp <- filter(AKOdep, stationName == Station)
+  
+  for (Start in tmp$deployDateTime) {
+    
+    tmp2 <- filter(tmp, deployDateTime == Start) %>% 
+    mutate(start = as.Date(deployDateTime),
+           stop = as.Date(recoverDateTime)) %>% 
+    select(receiver, start, stop, deployLat, deployLong)
+    
+    tmp2 <- expand.grid(receiver = tmp2$receiver,
+                        station = Station,
+                        x = tmp2$deployLong,
+                        y = tmp2$deployLat,
+                        dates=seq(tmp2$start,tmp2$stop,by="day"))
+    
+    AKOdep_all <- unique(rbind(AKOdep_all,tmp2))
+  }
+  }
+remove(Station, Start, tmp, tmp2)
+  
 ```
 
 ## Akoestische data
 Plot met looptijden per plaatsnaam van de verschillende receiverposities.
 
 ```{r akoestiek, echo=FALSE}
+AKOdata$Dateshort <- as.Date(AKOdata$Date)
 ggplot(AKOdata, aes(x=Dateshort,y=Station.Name)) + geom_point()
+
+AKOdatamap <- AKOdata %>% 
+  group_by(Dateshort,Receiver,Transmitter) %>% 
+  summarize(x=first(deployLong),y=first(deployLat))
+
+leaflet(data=AKOdep_all) %>% 
+  addTiles() %>% 
+  addCircleMarkers(~x,~y)
 ```
 
