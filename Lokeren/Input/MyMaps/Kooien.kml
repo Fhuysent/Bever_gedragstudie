@@ -1,0 +1,310 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+  <Document>
+    <name>Kooien</name>
+    <Style id="icon-1834-FF5252-normal">
+      <IconStyle>
+        <color>ff5252ff</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>0</scale>
+      </LabelStyle>
+    </Style>
+    <Style id="icon-1834-FF5252-highlight">
+      <IconStyle>
+        <color>ff5252ff</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>1</scale>
+      </LabelStyle>
+    </Style>
+    <StyleMap id="icon-1834-FF5252">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#icon-1834-FF5252-normal</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#icon-1834-FF5252-highlight</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Placemark>
+      <name>Zeilmeer01</name>
+      <description><![CDATA[beschrijving: Kooi bij uitgang grote burcht (Lok_Burcht)<br>Cameranummer: 64<br>Slotnummer: 281<br>Opzet: 13-feb-2022 16:00:00 PST<br>Afbraak: 2-mrt-2022 15:00:00 PST<br>Actief: false]]></description>
+      <styleUrl>#icon-1834-FF5252</styleUrl>
+      <ExtendedData>
+        <Data name="beschrijving">
+          <value>Kooi bij uitgang grote burcht (Lok_Burcht)</value>
+        </Data>
+        <Data name="Cameranummer">
+          <value>64.0</value>
+        </Data>
+        <Data name="Slotnummer">
+          <value>281</value>
+        </Data>
+        <Data name="Opzet">
+          <value>1644796800000000</value>
+        </Data>
+        <Data name="Afbraak">
+          <value>1646262000000000</value>
+        </Data>
+        <Data name="Actief">
+          <value>0</value>
+        </Data>
+      </ExtendedData>
+      <Point>
+        <coordinates>
+          3.9776124,51.1159436,0
+        </coordinates>
+      </Point>
+    </Placemark>
+    <Placemark>
+      <name>Zeilmeer03</name>
+      <description><![CDATA[beschrijving: Kooi bij afgeknaagde wilg (Lok_Burcht links)<br>Cameranummer: 72<br>Slotnummer: 283<br>Opzet: 13-feb-2022 16:00:00 PST<br>Afbraak: 2-mrt-2022 16:00:00 PST<br>Actief: false]]></description>
+      <styleUrl>#icon-1834-FF5252</styleUrl>
+      <ExtendedData>
+        <Data name="beschrijving">
+          <value>Kooi bij afgeknaagde wilg (Lok_Burcht links)</value>
+        </Data>
+        <Data name="Cameranummer">
+          <value>72.0</value>
+        </Data>
+        <Data name="Slotnummer">
+          <value>283</value>
+        </Data>
+        <Data name="Opzet">
+          <value>1644796800000000</value>
+        </Data>
+        <Data name="Afbraak">
+          <value>1646265600000000</value>
+        </Data>
+        <Data name="Actief">
+          <value>0</value>
+        </Data>
+      </ExtendedData>
+      <Point>
+        <coordinates>
+          3.9791713,51.1171132,0
+        </coordinates>
+      </Point>
+    </Placemark>
+    <Placemark>
+      <name>Zeilmeer04</name>
+      <description><![CDATA[beschrijving: Kooi in sloot (Lok_afgebeten wilg)<br>Cameranummer: 76<br>Slotnummer: 284<br>Opzet: 13-feb-2022 16:00:00 PST<br>Afbraak: 10-mrt-20122 16:00:00 PDT<br>Actief: false]]></description>
+      <styleUrl>#icon-1834-FF5252</styleUrl>
+      <ExtendedData>
+        <Data name="beschrijving">
+          <value>Kooi in sloot (Lok_afgebeten wilg)</value>
+        </Data>
+        <Data name="Cameranummer">
+          <value>76.0</value>
+        </Data>
+        <Data name="Slotnummer">
+          <value>284</value>
+        </Data>
+        <Data name="Opzet">
+          <value>1644796800000000</value>
+        </Data>
+        <Data name="Afbraak">
+          <value>572827762800000000</value>
+        </Data>
+        <Data name="Actief">
+          <value>0</value>
+        </Data>
+      </ExtendedData>
+      <Point>
+        <coordinates>
+          3.9781186,51.1174741,0
+        </coordinates>
+      </Point>
+    </Placemark>
+    <Placemark>
+      <name>Zeilmeer02</name>
+      <description><![CDATA[beschrijving: Kooi bij omgeknaagde boom aan burcht (Lok_watersloot)<br>Cameranummer: 65<br>Slotnummer: 282<br>Opzet: 13-feb-2022 16:00:00 PST<br>Afbraak: 2-mrt-2022 16:00:00 PST<br>Actief: false]]></description>
+      <styleUrl>#icon-1834-FF5252</styleUrl>
+      <ExtendedData>
+        <Data name="beschrijving">
+          <value>Kooi bij omgeknaagde boom aan burcht (Lok_watersloot)</value>
+        </Data>
+        <Data name="Cameranummer">
+          <value>65.0</value>
+        </Data>
+        <Data name="Slotnummer">
+          <value>282</value>
+        </Data>
+        <Data name="Opzet">
+          <value>1644796800000000</value>
+        </Data>
+        <Data name="Afbraak">
+          <value>1646265600000000</value>
+        </Data>
+        <Data name="Actief">
+          <value>0</value>
+        </Data>
+      </ExtendedData>
+      <Point>
+        <coordinates>
+          3.9772696,51.1157628,0
+        </coordinates>
+      </Point>
+    </Placemark>
+    <Placemark>
+      <name>Zeilmeer05</name>
+      <description><![CDATA[beschrijving: Dubbele kooi bij burcht Oost<br>Cameranummer: 121<br>Slotnummer: <br>Opzet: 2-mrt-2022 16:00:00 PST<br>Afbraak: 14-mrt-2022 16:00:00 PDT<br>Actief: false]]></description>
+      <styleUrl>#icon-1834-FF5252</styleUrl>
+      <ExtendedData>
+        <Data name="beschrijving">
+          <value>Dubbele kooi bij burcht Oost</value>
+        </Data>
+        <Data name="Cameranummer">
+          <value>121.0</value>
+        </Data>
+        <Data name="Slotnummer">
+          <value/>
+        </Data>
+        <Data name="Opzet">
+          <value>1646265600000000</value>
+        </Data>
+        <Data name="Afbraak">
+          <value>1647298800000000</value>
+        </Data>
+        <Data name="Actief">
+          <value>0</value>
+        </Data>
+      </ExtendedData>
+      <Point>
+        <coordinates>
+          3.9777245,51.1158784,0
+        </coordinates>
+      </Point>
+    </Placemark>
+    <Placemark>
+      <name>Zeilmeer06</name>
+      <description><![CDATA[beschrijving: Dubbele kooi bij burcht West<br>Cameranummer: 65<br>Slotnummer: 282<br>Opzet: 2-mrt-2022 16:00:00 PST<br>Afbraak: 14-mrt-2022 16:00:00 PDT<br>Actief: false]]></description>
+      <styleUrl>#icon-1834-FF5252</styleUrl>
+      <ExtendedData>
+        <Data name="beschrijving">
+          <value>Dubbele kooi bij burcht West</value>
+        </Data>
+        <Data name="Cameranummer">
+          <value>65.0</value>
+        </Data>
+        <Data name="Slotnummer">
+          <value>282</value>
+        </Data>
+        <Data name="Opzet">
+          <value>1646265600000000</value>
+        </Data>
+        <Data name="Afbraak">
+          <value>1647298800000000</value>
+        </Data>
+        <Data name="Actief">
+          <value>0</value>
+        </Data>
+      </ExtendedData>
+      <Point>
+        <coordinates>
+          3.9776711,51.1158535,0
+        </coordinates>
+      </Point>
+    </Placemark>
+    <Placemark>
+      <name>Zeilmeer07</name>
+      <description><![CDATA[beschrijving: Val bij noordelijkste Reconyx<br>Cameranummer: 72<br>Slotnummer: 283<br>Opzet: 2-mrt-2022 16:00:00 PST<br>Afbraak: 14-mrt-2022 16:00:00 PDT<br>Actief: false]]></description>
+      <styleUrl>#icon-1834-FF5252</styleUrl>
+      <ExtendedData>
+        <Data name="beschrijving">
+          <value>Val bij noordelijkste Reconyx</value>
+        </Data>
+        <Data name="Cameranummer">
+          <value>72.0</value>
+        </Data>
+        <Data name="Slotnummer">
+          <value>283</value>
+        </Data>
+        <Data name="Opzet">
+          <value>1646265600000000</value>
+        </Data>
+        <Data name="Afbraak">
+          <value>1647298800000000</value>
+        </Data>
+        <Data name="Actief">
+          <value>0</value>
+        </Data>
+      </ExtendedData>
+      <Point>
+        <coordinates>
+          3.9798471,51.1187887,0
+        </coordinates>
+      </Point>
+    </Placemark>
+    <Placemark>
+      <name>Zeilmeer08</name>
+      <description><![CDATA[beschrijving: Kooi aan uiteinde van betonnen duiker<br>Cameranummer: 76<br>Slotnummer: <br>Opzet: 10-mrt-2022 15:00:00 PST<br>Afbraak: 14-mrt-2022 16:00:00 PDT<br>Actief: false]]></description>
+      <styleUrl>#icon-1834-FF5252</styleUrl>
+      <ExtendedData>
+        <Data name="beschrijving">
+          <value>Kooi aan uiteinde van betonnen duiker</value>
+        </Data>
+        <Data name="Cameranummer">
+          <value>76.0</value>
+        </Data>
+        <Data name="Slotnummer">
+          <value/>
+        </Data>
+        <Data name="Opzet">
+          <value>1646953200000000</value>
+        </Data>
+        <Data name="Afbraak">
+          <value>1647298800000000</value>
+        </Data>
+        <Data name="Actief">
+          <value>0</value>
+        </Data>
+      </ExtendedData>
+      <Point>
+        <coordinates>
+          3.9777675,51.1170759,0
+        </coordinates>
+      </Point>
+    </Placemark>
+    <Placemark>
+      <name>Zeilmeer09</name>
+      <description><![CDATA[beschrijving: Wissel tegenover pompgemaal<br>Cameranummer: 65<br>Slotnummer: <br>Opzet: 14-mrt-2022 16:00:00 PDT<br>Afbraak: 27-mrt-2022 18:30:00 PDT<br>Actief: false]]></description>
+      <styleUrl>#icon-1834-FF5252</styleUrl>
+      <ExtendedData>
+        <Data name="beschrijving">
+          <value>Wissel tegenover pompgemaal</value>
+        </Data>
+        <Data name="Cameranummer">
+          <value>65.0</value>
+        </Data>
+        <Data name="Slotnummer">
+          <value/>
+        </Data>
+        <Data name="Opzet">
+          <value>1647298800000000</value>
+        </Data>
+        <Data name="Afbraak">
+          <value>1648431000000000</value>
+        </Data>
+        <Data name="Actief">
+          <value>0</value>
+        </Data>
+      </ExtendedData>
+      <Point>
+        <coordinates>
+          3.9788924,51.122247,0
+        </coordinates>
+      </Point>
+    </Placemark>
+  </Document>
+</kml>
