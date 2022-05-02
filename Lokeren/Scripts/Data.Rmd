@@ -132,3 +132,25 @@ Sporen <- Sporen %>%
   mutate(Status = str_remove_all(Status, fixed("Â")))
 
 ``` 
+## MyMapsdata
+Plotjes om data te controleren.
+
+```{r akoestiek, echo=FALSE}
+# selectie van enkel actieve sporen binnen studiegebied
+Sporenmap <- Sporen %>% 
+  filter(Status!='Mortality') %>% 
+  filter(Status=='Actief') %>% 
+  filter(y<51.13 & y>51.11)
+
+pal <- colorFactor(
+  palette = c('blue','green','red','orange','yellow'),
+  domain = Sporenmap$Type
+)
+
+leaflet(data=Sporenmap) %>% 
+  addTiles() %>% 
+  addCircleMarkers(~x,~y, color=~pal(Type),stroke = F, radius=5, fillOpacity = 0.8) %>% 
+  addLegend("bottomright", pal = pal, values = ~Type,
+    title = "Spoortypes",
+    opacity = 1)
+```
