@@ -18,8 +18,18 @@ library(inborutils)
 In het project werden een aantal bevers gezenderd en via telemetrie opgevolgd. Elk van deze bevers kreeg daarbij zowel een VHF als Akoestische zender. De VHF zenders leveren manuele locatiebepalingen met behulp van antennes op, akoestische zenders leveren automatische locaties op ter hoogte van vaste receivers.
 
 De gegevens van de verschillende databronnen worden als volgt gecompileerd:
+  - *Bevers*: identificatiegegevens van de gevangen en gezenderde bevers
+  - *Sporen*: gegevens van sporeninventarisaties
   - *AKOdata*: gegevens akoestische receivers uit csv-bestanden met deployments en met detecties
-  - *VHFdata*
+  - *Telemetrie*: gegevens van VHF detecties
+  - *Wrn_cameras*: gegevens van detecties van bevers via cameras
+  
+Overige databestanden bevatten gegevens over deployments van akoestische receivers, camera's en kooien.
+
+```{r data inlezen Bevers, include=FALSE}
+BeverIDs <- read.csv("../Input/Bevers_Lokeren.csv")
+
+```
 
 ```{r data inlezen Akoestiek, include=FALSE}
 #deployments inlezen
@@ -46,7 +56,8 @@ not_all_na <- function(x) any(!is.na(x))
 AKOdata <- AKOdet %>% 
   inner_join(AKOdep, by = c("Receiver"="receiver")) %>% 
   select(where(not_all_na)) %>% 
-  filter(Date>deployDateTime & Date<recoverDateTime)
+  filter(Date>deployDateTime & Date<recoverDateTime) %>% 
+  left_join(BeverIDs[,c("bever", "Akoestisch")], by = c("Transmitter" = "Akoestisch"))
 remove(not_all_na)
 
 AKOdep_all <- NULL
@@ -125,7 +136,8 @@ Bevers <- Bevers %>%
   
 Cameras <- Cameras %>%
   mutate(Opzet = Googletime(Opzet),
-         Afbraak = Googletime(Afbraak))
+         Afbraak = Googletime(Afbraak)) %>% 
+  rename(Camera = Nummer)
     
 Kooien <- Kooien %>%
   mutate(Opzet = Googletime(Opzet),
@@ -169,24 +181,23 @@ Telemetrie <- read.csv("../Input/Telemetrie/Telemetrie.csv") %>%
   separate(LatLong , c('y','x'), sep = ",") %>% 
   mutate(across(c(x,y), as.numeric)) %>% 
   mutate(Datum = as.POSIXct(strptime(Datetime_local, "%d-%m-%Y %H:%M:%S"))) %>% 
-  mutate(Bever_ID = as.factor(Bever_ID)) %>% 
-  select(-c(Datetime_UTC, Datetime_local)) 
+  select(-c(Datetime_UTC, Datetime_local)) %>% 
+  left_join(BeverIDs[,c("bever", "VHF.kort")], by = c("Bever_ID" = "VHF.kort"))
 ``` 
 
 ```{r kaartjes Telemetrie, echo=FALSE}
-# selectie van enkel actieve sporen binnen studiegebied
 TelemetrieMap <- Telemetrie %>% 
   filter(y<51.13 & y>51.11)
 
 pal <- colorFactor(
   palette = c('blue','green','red','orange'),
-  domain = TelemetrieMap$Bever_ID
+  domain = TelemetrieMap$bever
 )
 
 leaflet(data=TelemetrieMap) %>% 
   addTiles() %>% 
-  addCircleMarkers(~x,~y, color=~pal(Bever_ID),stroke = F, radius=5, fillOpacity = 0.8) %>% 
-  addLegend("bottomright", pal = pal, values = ~Bever_ID,
+  addCircleMarkers(~x,~y, color=~pal(bever),stroke = F, radius=5, fillOpacity = 0.8) %>% 
+  addLegend("bottomright", pal = pal, values = ~bever,
     title = "Bever",
     opacity = 1)
 ```
@@ -197,11 +208,31 @@ Hier worden de gegevens ingelezen van bevers die individueel konden worden herke
 ```{r data inlezen Cameravallen, include=FALSE}
 Wrn_cameras <- read.csv("../Input/Waarnemingen_camera.csv") %>% 
   mutate(Datum = as.POSIXct(strptime(Datum, "%Y-%m-%d"))) %>% 
-  filter(Bever!="") %>% 
+  filter(Bever!="" & Bever != "Gemerkt" & Bever != "Ongemerkt") %>% 
   mutate(Bever_ID = as.factor(Bever)) %>% 
-  filter(Bever_ID != "Gemerkt" & Bever_ID != "Ongemerkt")
+  left_join(Cameras, by = "Camera") %>% 
+  mutate(Datum = as.POSIXct(paste(Datum,Uur))) %>% 
+  filter(Datum > Opzet) %>% 
+  filter(Datum < Afbraak | Actief == 1) %>% 
+  select(-c(Uur, naam, Slot,Type, Doel))
 ``` 
 
 ```{r kaartjes Cameravallen, echo=FALSE}
+# selectie van enkel actieve sporen binnen studiegebied
+Wrn_camerasMap <- Wrn_cameras %>% 
+  filter(y<51.13 & y>51.11)
 
+
+pal <- colorFactor(
+  palette = c('blue','green','red','orange','grey20','grey40','grey60'),
+  domain = Wrn_camerasMap$Bever_ID
+)
+
+
+leaflet(data = Wrn_camerasMap) %>%
+  addTiles() %>% 
+  addCircleMarkers(~x,~y, color=~pal(Bever_ID),stroke = F, radius=5, fillOpacity = 0.8) %>% 
+  addLegend("bottomright", pal = pal, values = ~Bever_ID,
+    title = "Bever",
+    opacity = 1)
 ```

@@ -4,7 +4,7 @@ WKT,name,Datum,description,Type,Status
 "POINT (3.9777713 51.1148422)",Point 2,1645570800000000,Wissel gebruikt,Wissel,Actief
 "POINT (3.9792952 51.1163294)",Point 4,1645570800000000,Knaagspoor,Knaagspoor,Actief
 "POINT (3.97937 51.122378)",Point 6,1645570800000000,Rustplaats,Rustplaats,Actief
-"POINT (3.9797373 51.118953)",Point 8,1645628400000000,Grote plons,Waarneming,
+"POINT (3.9797373 51.118953)",Point 8,1645628400000000,Grote plons,Waarneming,Actief
 "POINT (3.9766993 51.1127954)",Punt 2,1645570800000000,Wissel,Wissel,Oud
 "POINT (3.9778392 51.1157365)",Point 9,1645570800000000,Wissel,Wissel,Actief
 "POINT (3.9772961 51.1157735)",Point 10,1645570800000000,Wissel,Wissel,Actief
@@ -31,7 +31,7 @@ WKT,name,Datum,description,Type,Status
 "POINT (3.9805746 51.1208057)",Point 30,1646002800000000,Wissel,Wissel,Actief
 "POINT (3.9805316 51.1208953)",Point 31,1646002800000000,Knaagspoor,Knaagspoor,Actief
 "POINT (3.9805597 51.1208642)",Point 32,1646002800000000,Wissel,Wissel,Actief
-"POINT (3.980392 51.121045)",Point 33,1646002800000000,Rustplaats,Rustplaats,
+"POINT (3.980392 51.121045)",Point 33,1646002800000000,Rustplaats,Rustplaats,Actief
 "POINT (3.9803573 51.1210955)",Point 34,1646002800000000,Wissel,Wissel,Actief
 "POINT (3.980287 51.1211447)",Point 35,1646002800000000,Wissel,Wissel,Actief
 "POINT (3.9800137 51.1214055)",Point 36,1646002800000000,Wissel,Wissel,Actief
@@ -46,17 +46,17 @@ WKT,name,Datum,description,Type,Status
 "POINT (3.9774975 51.1222053)",Point 45,1646002800000000,Wissel,Wissel,Actief
 "POINT (3.9743257 51.122468)",Point 46,1646002800000000,Knaagspoor,Knaagspoor,Actief
 "POINT (3.977354 51.1220496)",Point 47,1646002800000000,Knaagspoor,Knaagspoor,Oud
-"POINT (3.9789899 51.1223055)",Point 48,1646002800000000,Rustplaats,Rustplaats,
+"POINT (3.9789899 51.1223055)",Point 48,1646002800000000,Rustplaats,Rustplaats,Actief
 "POINT (3.9789254 51.1222403)",Point 49,1646002800000000,Wissel,Wissel,Actief
 "POINT (3.9787287 51.1223817)",Point 50,1646002800000000,Rustplaats,Rustplaats,Actief
-"POINT (3.9785969 51.1224824)",Point 51,1646002800000000,Rustplaats,Rustplaats,
-"POINT (3.9783841 51.1226266)",Point 52,1646002800000000,Rustplaats,Rustplaats,
-"POINT (3.9774222 51.1239206)",Point 53,1646002800000000,Rustplaats,Rustplaats,
+"POINT (3.9785969 51.1224824)",Point 51,1646002800000000,Rustplaats,Rustplaats,Actief
+"POINT (3.9783841 51.1226266)",Point 52,1646002800000000,Rustplaats,Rustplaats,Actief
+"POINT (3.9774222 51.1239206)",Point 53,1646002800000000,Rustplaats,Rustplaats,Actief
 "POINT (3.9791779 51.1283059)",Point 54,1646002800000000,Knaagspoor,Knaagspoor,Oud
 "POINT (3.9786974 51.1281069)",Point 55,1646002800000000,Rustplaats,Rustplaats,Oud
 "POINT (3.9775355 51.1266957)",Point 56,1646002800000000,Wissel,Wissel,Oud
 "POINT (3.9770125 51.1267892)",Point 57,1646002800000000,Wissel,Wissel,Oud
-"POINT (3.9765278 51.1271596)",Point 58,1646002800000000,Mais,Knaagspoor,
+"POINT (3.9765278 51.1271596)",Point 58,1646002800000000,Mais,Knaagspoor,Oud
 "POINT (3.9767776 51.12664)",Point 59,1646002800000000,Wissel,Wissel,Oud
 "POINT (3.9760115 51.1255394)",Point 60,1646002800000000,Knaagspoor,Knaagspoor,Oud
 "POINT (3.9762432 51.1322363)",Point 61,1646002800000000,Knaagspoor,Knaagspoor,Oud
@@ -67,7 +67,7 @@ WKT,name,Datum,description,Type,Status
 "POINT (3.9737109 51.1356409)",Point 66,1646002800000000,Knaagspoor,Knaagspoor,Actief
 "POINT (3.9737887 51.1355496)",Point 67,1646002800000000,Wissel,Wissel,Actief
 "POINT (3.9735466 51.135672)",Point 68,1646002800000000,Wissel,Wissel,Actief
-"POINT (3.973421 51.1357251)",Point 69,1646002800000000,Burcht,Burcht,
+"POINT (3.973421 51.1357251)",Point 69,1646002800000000,Burcht,Burcht,Actief
 "POINT (3.973056 51.1360316)",Point 70,1646002800000000,Knaagspoor,Knaagspoor,Oud
 "POINT (3.9726461 51.1361398)",Point 71,1646002800000000,Wissel,Wissel,Oud
 "POINT (3.9757598 51.1339672)",Point 72,1646002800000000,Knaagspoor,Knaagspoor,Oud
@@ -90,7 +90,7 @@ WKT,name,Datum,description,Type,Status
 "POINT (3.9789356 51.1225744)",Point 89,1646002800000000,Knaagspoor,Knaagspoor,Oud
 "POINT (3.9786415 51.1228345)",Point 90,1646002800000000,Knaagspoor,Knaagspoor,Oud
 "POINT (3.9781967 51.1232688)",Point 91,1646002800000000,Knaagspoor,Knaagspoor,Oud
-"POINT (3.9775526 51.1166949)",Point 92,1646175600000000,Grote plons,Waarneming,
+"POINT (3.9775526 51.1166949)",Point 92,1646175600000000,Grote plons,Waarneming,Actief
 "POINT (3.9776565 51.118742)",Point 93,1646694000000000,Wissel,Wissel,Actief
 "POINT (3.9797019 51.1169628)",Point 94,1646694000000000,Wissel,Wissel,Actief
 "POINT (3.9800331 51.1167507)",Point 95,1646694000000000,Wissel,Wissel,Actief
@@ -139,7 +139,7 @@ WKT,name,Datum,description,Type,Status
 "POINT (3.9773318 51.124652)",Point 138,1646694000000000,Knaagspoor,Knaagspoor,Oud
 "POINT (3.9773835 51.1245565)",Point 139,1646694000000000,Wissel,Wissel,Oud
 "POINT (3.9774279 51.1244047)",Point 140,1646694000000000,Knaagspoor,Knaagspoor,Oud
-"POINT (3.9778729 51.1246074)",Point 141,1646694000000000,Mais,Knaagspoor,
+"POINT (3.9778729 51.1246074)",Point 141,1646694000000000,Mais,Knaagspoor,Oud
 "POINT (3.9776921 51.124134)",Point 142,1646694000000000,Knaagspoor,Knaagspoor,Oud
 "POINT (3.9777375 51.1239979)",Point 143,1646694000000000,Wissel,Wissel,Actief
 "POINT (3.9782953 51.126254)",Point 144,1646694000000000,Knaagspoor,Knaagspoor,Oud
@@ -209,8 +209,12 @@ WKT,name,Datum,description,Type,Status
 "POINT (3.9794793 51.1172974)",Point 209,1648687800000000,2 zwemmende bevers ongemerkt,Waarneming,Actief
 "POINT (3.9808541 51.1401969)",Point 210,1649714400000000,Losse receiver niet gevonden,Waarneming,Mortality
 "POINT (3.9794437 51.1173211)",Point 212,1650574200000000,Zwemmende bever geen zender,Waarneming,Actief
-"POINT (3.9800437 51.1194239)",Point 212,1650618000000000,Zender gevonden nr 104,Mortality,
-"POINT (3.9781057 51.1150175)",Point 214,1651001400000000,Zwemmende bever,Waarneming,
-"POINT (3.9795057 51.1171208)",Point 214,1651431600000000,Bever ongemerkt zit aan rivieroever tak te eten en zich te verzorgen,Waarneming,
-"POINT (3.9807701 51.1185334)",Point 215,1651432200000000,Bever komt aangezwommen en gaat op de dijk zitten om zich te kuisen,Waarneming,
-"POINT (3.977925 51.1154304)",Point 216,1651434000000000,Zwemmende bever van rechts naar links ongezenderd,Waarneming,
+"POINT (3.9800437 51.1194239)",Point 212,1650618000000000,Zender gevonden nr 104,Waarneming,Mortality
+"POINT (3.9781057 51.1150175)",Point 214,1651001400000000,Zwemmende bever,Waarneming,Actief
+"POINT (3.9795057 51.1171208)",Point 214,1651431600000000,Bever ongemerkt zit aan rivieroever tak te eten en zich te verzorgen,Waarneming,Actief
+"POINT (3.9807701 51.1185334)",Point 215,1651432200000000,Bever komt aangezwommen en gaat op de dijk zitten om zich te kuisen,Waarneming,Actief
+"POINT (3.977925 51.1154304)",Point 216,1651434000000000,Zwemmende bever van rechts naar links ongezenderd,Waarneming,Actief
+"POINT (3.9780277 51.1147638)",Point 217,1651775400000000,Zwemmende bever,Waarneming,Actief
+"POINT (3.979085 51.1162127)",Point 218,1651776900000000,Zwemmende bever,Waarneming,Actief
+"POINT (3.9790889 51.115026)",Point 219,1651777200000000,Grote plons,Waarneming ,Actief
+"POINT (3.9777834 51.1149737)",Point 220,1651777500000000,Geknaag aan voet van boom, bever niet zichtbaar, mogelijks dagrustplaats,Waarneming ,Actief 
