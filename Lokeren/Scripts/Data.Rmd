@@ -1,0 +1,238 @@
+---
+title: "Data"
+author: "Frank Huysentruyt"
+date: "21-4-2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(leaflet)
+library(lubridate)
+library(inborutils)
+```
+
+## Inlezen Gegevens
+
+In het project werden een aantal bevers gezenderd en via telemetrie opgevolgd. Elk van deze bevers kreeg daarbij zowel een VHF als Akoestische zender. De VHF zenders leveren manuele locatiebepalingen met behulp van antennes op, akoestische zenders leveren automatische locaties op ter hoogte van vaste receivers.
+
+De gegevens van de verschillende databronnen worden als volgt gecompileerd:
+  - *Bevers*: identificatiegegevens van de gevangen en gezenderde bevers
+  - *Sporen*: gegevens van sporeninventarisaties
+  - *AKOdata*: gegevens akoestische receivers uit csv-bestanden met deployments en met detecties
+  - *Telemetrie*: gegevens van VHF detecties
+  - *Wrn_cameras*: gegevens van detecties van bevers via cameras
+  
+Overige databestanden bevatten gegevens over deployments van akoestische receivers, camera's en kooien.
+
+```{r data inlezen Bevers, include=FALSE}
+BeverIDs <- read.csv("../Input/Bevers_Lokeren.csv")
+
+```
+
+```{r data inlezen Akoestiek, include=FALSE}
+#deployments inlezen
+AKOdep <- read.csv("../Input/Akoestiek/Deployments/ETN-deployments.csv", header=TRUE, sep=,)
+#alle deployments en recoveries op de middag zetten (misschien nog vervangen door exacte uur)
+AKOdep$deployDateTime <- as.POSIXlt(as.Date(AKOdep$deployDateTime))+43200
+AKOdep$recoverDateTime[AKOdep$recoverDateTime==""] <- as.character(Sys.time())
+AKOdep$recoverDateTime <- as.POSIXlt(as.Date(AKOdep$recoverDateTime))+43200
+
+#detecties inlezen
+fileNames <- Sys.glob("../Input/Akoestiek/*.csv")
+AKOdet <- NULL
+##samenvoegen gegevens met verwijderen van eventuele dubbels ontstaan door niet wissen tussen uitlezen
+for (fileName in fileNames) {
+  AKOdet <- unique(rbind(AKOdet, read.csv(fileName, header=TRUE, sep=,)))
+}
+remove(fileName, fileNames)
+
+colnames(AKOdet)[1] <- "Date"
+AKOdet$Date <- as.POSIXlt(AKOdet$Date)
+
+#merge alle niet volledig NA kolommen
+not_all_na <- function(x) any(!is.na(x))
+AKOdata <- AKOdet %>% 
+  inner_join(AKOdep, by = c("Receiver"="receiver")) %>% 
+  select(where(not_all_na)) %>% 
+  filter(Date>deployDateTime & Date<recoverDateTime) %>% 
+  left_join(BeverIDs[,c("bever", "Akoestisch")], by = c("Transmitter" = "Akoestisch"))
+remove(not_all_na)
+
+AKOdep_all <- NULL
+for (Station in AKOdep$stationName) {
+  
+  tmp <- filter(AKOdep, stationName == Station)
+  
+  for (Start in tmp$deployDateTime) {
+    
+    tmp2 <- filter(tmp, deployDateTime == Start) %>% 
+    mutate(start = as.Date(deployDateTime),
+           stop = as.Date(recoverDateTime)) %>% 
+    select(receiver, start, stop, deployLat, deployLong)
+    
+    tmp2 <- expand.grid(receiver = tmp2$receiver,
+                        station = Station,
+                        x = tmp2$deployLong,
+                        y = tmp2$deployLat,
+                        dates=seq(tmp2$start,tmp2$stop,by="day"))
+    
+    AKOdep_all <- unique(rbind(AKOdep_all,tmp2))
+  }
+  }
+remove(Station, Start, tmp, tmp2)
+  
+```
+
+## Akoestische data
+Dit zijn detecties die zijn uitgelezen per receiver. Alle detecties zijn te koppelen aan de geografische locatie van deze receiver op dat moment. De receivers worden gebruikt om de grenzen van de territoria te controleren.
+
+```{r akoestiek, echo=FALSE, message=FALSE}
+AKOdata$Dateshort <- as.Date(AKOdata$Date)
+
+AKOdata %>% group_by(Dateshort,Transmitter,Receiver,Station.Name) %>% 
+  summarize(observations=length(Transmitter)) %>% 
+  ggplot(aes(x=Dateshort,y=observations)) + geom_point() + facet_grid(~Station.Name)
+
+AKOdatamap <- AKOdata %>% 
+  group_by(Dateshort,Receiver,Transmitter) %>% 
+  summarize(x=first(deployLong),y=first(deployLat))
+
+leaflet(data=AKOdep_all) %>% 
+  addTiles() %>% 
+  addCircleMarkers(~x,~y)
+```
+## MyMapsdata
+Deze gegevens zijn de geografische locaties zoals ingegegeven via Google MyMaps. Er zijn 4 verschillende datalagen:
+  - *Bevers*: het moment en de locatie waarop bevers werden gevangen en gezenderd
+  - *Cameras*: het tijdsinterval en de locaties van cameraval-deployments
+  - *Kooien*: het tijdsinterval en de locaties van vangkooi-deployments
+  - *Sporen*: de locatie van verschillende spoortypes, zowel oud als nieuw
+
+```{r data inlezen MyMaps, include=FALSE}
+fileNames <- Sys.glob("../Input/MyMaps/*.csv")
+
+for (i in fileNames) {
+  assign(
+    unlist(regmatches(i, gregexpr("(?<=MyMaps/).*?(?=\\.csv)", i, perl=T))),
+    read.csv(i, header=TRUE, sep=,) %>% 
+      mutate(WKT = regmatches(WKT, gregexpr("(?<=\\().*?(?=\\))", WKT, perl=T))) %>% 
+      separate(WKT, c('x','y'), sep=" ") %>% 
+      mutate(x = as.numeric(x), y = as.numeric(y))
+  )
+  }
+remove(i, fileNames)
+
+#Opkuisen
+
+#Van Google time (PST sinds 1/1/1970 * 1000000) naar onze tijd
+Googletime <- function(x) {
+  as.POSIXct((as.numeric(x)/1000000)-32400, origin = "1970-01-01")
+}
+
+Bevers <- Bevers %>%
+  mutate(Tijdstip = Googletime(Tijdstip))
+  
+Cameras <- Cameras %>%
+  mutate(Opzet = Googletime(Opzet),
+         Afbraak = Googletime(Afbraak)) %>% 
+  rename(Camera = Nummer)
+    
+Kooien <- Kooien %>%
+  mutate(Opzet = Googletime(Opzet),
+         Afbraak = Googletime(Afbraak))
+
+Sporen <- Sporen %>%
+  filter(!is.na(x)) %>% 
+  select(-description) %>% 
+  mutate(Datum = Googletime(Datum)) %>% 
+  mutate(Type = str_remove_all(Type, fixed("Â"))) %>% 
+  mutate(Status = str_remove_all(Status, fixed("Â")))
+
+``` 
+
+```{r kaartjes MyMaps, echo=FALSE}
+# selectie van enkel actieve sporen binnen studiegebied
+Sporenmap <- Sporen %>% 
+  filter(Status!='Mortality') %>% 
+  filter(Status=='Actief') %>% 
+  filter(y<51.13 & y>51.11)
+
+pal <- colorFactor(
+  palette = c('blue','green','red','orange','yellow'),
+  domain = Sporenmap$Type
+)
+
+leaflet(data=Sporenmap) %>% 
+  addTiles() %>% 
+  addCircleMarkers(~x,~y, color=~pal(Type),stroke = F, radius=5, fillOpacity = 0.8) %>% 
+  addLegend("bottomright", pal = pal, values = ~Type,
+    title = "Spoortypes",
+    opacity = 1)
+```
+
+## Telemetrie
+Hier worden de gegevens ingelezen die via AppSheet worden verzameld. De data wordt vanuit de app weggeschreven naar een databank op de projectdrive. De download van die gegevens wordt als .csv onder de input map geplaatst met als naam 'Telemetrie'.
+
+```{r data inlezen Telemetrie, include=FALSE}
+Telemetrie <- read.csv("../Input/Telemetrie/Telemetrie.csv") %>% 
+  filter(ID != "") %>% 
+  separate(LatLong , c('y','x'), sep = ",") %>% 
+  mutate(across(c(x,y), as.numeric)) %>% 
+  mutate(Datum = as.POSIXct(strptime(Datetime_local, "%d-%m-%Y %H:%M:%S"))) %>% 
+  select(-c(Datetime_UTC, Datetime_local)) %>% 
+  left_join(BeverIDs[,c("bever", "VHF.kort")], by = c("Bever_ID" = "VHF.kort"))
+``` 
+
+```{r kaartjes Telemetrie, echo=FALSE}
+TelemetrieMap <- Telemetrie %>% 
+  filter(y<51.13 & y>51.11)
+
+pal <- colorFactor(
+  palette = c('blue','green','red','orange'),
+  domain = TelemetrieMap$bever
+)
+
+leaflet(data=TelemetrieMap) %>% 
+  addTiles() %>% 
+  addCircleMarkers(~x,~y, color=~pal(bever),stroke = F, radius=5, fillOpacity = 0.8) %>% 
+  addLegend("bottomright", pal = pal, values = ~bever,
+    title = "Bever",
+    opacity = 1)
+```
+
+## Waarnemingen camera's
+Hier worden de gegevens ingelezen van bevers die individueel konden worden herkend op cameravallen. De bevers kunnen ofwel worden gelinkt aan gekende bevers met volgnummer of zijn individueel herkenbaar door opvallende kenmerken. Ook de gemerkte maar niet afzonderlijke herkenbare dieren zitten in deze dataset.
+
+```{r data inlezen Cameravallen, include=FALSE}
+Wrn_cameras <- read.csv("../Input/Waarnemingen_camera.csv") %>% 
+  mutate(Datum = as.POSIXct(strptime(Datum, "%Y-%m-%d"))) %>% 
+  filter(Bever!="" & Bever != "Gemerkt" & Bever != "Ongemerkt") %>% 
+  mutate(Bever_ID = as.factor(Bever)) %>% 
+  left_join(Cameras, by = "Camera") %>% 
+  mutate(Datum = as.POSIXct(paste(Datum,Uur))) %>% 
+  filter(Datum > Opzet) %>% 
+  filter(Datum < Afbraak | Actief == 1) %>% 
+  select(-c(Uur, naam, Slot,Type, Doel))
+``` 
+
+```{r kaartjes Cameravallen, echo=FALSE}
+# selectie van enkel actieve sporen binnen studiegebied
+Wrn_camerasMap <- Wrn_cameras %>% 
+  filter(y<51.13 & y>51.11)
+
+
+pal <- colorFactor(
+  palette = c('blue','green','red','orange','grey20','grey40','grey60'),
+  domain = Wrn_camerasMap$Bever_ID
+)
+
+
+leaflet(data = Wrn_camerasMap) %>%
+  addTiles() %>% 
+  addCircleMarkers(~x,~y, color=~pal(Bever_ID),stroke = F, radius=5, fillOpacity = 0.8) %>% 
+  addLegend("bottomright", pal = pal, values = ~Bever_ID,
+    title = "Bever",
+    opacity = 1)
+```
