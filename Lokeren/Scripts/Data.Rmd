@@ -181,6 +181,7 @@ Telemetrie <- read.csv("../Input/Telemetrie/Telemetrie.csv") %>%
   separate(LatLong , c('y','x'), sep = ",") %>% 
   mutate(across(c(x,y), as.numeric)) %>% 
   mutate(Datum = as.POSIXct(strptime(Datetime_local, "%d-%m-%Y %H:%M:%S"))) %>% 
+  mutate(Bever_ID = as.integer(Bever_ID)) %>% 
   select(-c(Datetime_UTC, Datetime_local)) %>% 
   left_join(BeverIDs[,c("bever", "VHF.kort")], by = c("Bever_ID" = "VHF.kort"))
 ``` 

@@ -1,0 +1,119 @@
+---
+title: "Burchtlocaties_DVW"
+author: "Frank Huysentruyt"
+date: "13-5-2022"
+output:
+  html_document:
+    df_print: paged
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(leaflet)
+library(suncalc)
+```
+
+# Locaties burchten en dagrustplaatsen
+
+In dit document...
+
+```{r data inlezen MyMaps, include=FALSE}
+BeverIDs <- read.csv("../Input/Bevers_Lokeren.csv")
+
+fileNames <- Sys.glob("../Input/MyMaps/*.csv")
+
+for (i in fileNames) {
+  assign(
+    unlist(regmatches(i, gregexpr("(?<=MyMaps/).*?(?=\\.csv)", i, perl=T))),
+    read.csv(i, header=TRUE, sep=,) %>% 
+      mutate(WKT = regmatches(WKT, gregexpr("(?<=\\().*?(?=\\))", WKT, perl=T))) %>% 
+      separate(WKT, c('x','y'), sep=" ") %>% 
+      mutate(x = as.numeric(x), y = as.numeric(y))
+  )
+  }
+remove(i, fileNames)
+
+#Opkuisen
+
+#Van Google time (PST sinds 1/1/1970 * 1000000) naar onze tijd
+Googletime <- function(x) {
+  as.POSIXct((as.numeric(x)/1000000)-32400, origin = "1970-01-01")
+}
+
+Bevers <- Bevers %>%
+  mutate(Tijdstip = Googletime(Tijdstip))
+  
+Cameras <- Cameras %>%
+  mutate(Opzet = Googletime(Opzet),
+         Afbraak = Googletime(Afbraak)) %>% 
+  rename(Camera = Nummer)
+    
+Kooien <- Kooien %>%
+  mutate(Opzet = Googletime(Opzet),
+         Afbraak = Googletime(Afbraak))
+
+Sporen <- Sporen %>%
+  filter(!is.na(x)) %>% 
+  select(-description) %>% 
+  mutate(Datum = Googletime(Datum)) %>% 
+  mutate(Type = str_remove_all(Type, fixed("Â"))) %>% 
+  mutate(Status = str_remove_all(Status, fixed("Â")))
+
+``` 
+
+```{r cars}
+# selectie van visueel herkende burchten binnen het gebied
+Burchtenmap <- Sporen %>% 
+  filter(Status != 'Mortality') %>% 
+  filter(Status == 'Actief') %>% 
+  filter(Type == 'Burcht') %>% 
+  filter(y<51.13 & y>51.11)
+
+leaflet(data=Burchtenmap) %>% 
+  addTiles() %>% 
+  addCircleMarkers(~x,~y, color = 'darkgreen' , stroke = F, radius = 7, fillOpacity = 0.8) %>% 
+  addLegend("bottomright", colors = 'dakgreen' , labels = 'burchten', 
+            title = "Spoortypes",
+            opacity = 1)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r telemetrie, echo=FALSE}
+
+Telemetrie <- read.csv("../Input/Telemetrie/Telemetrie.csv") %>% 
+  filter(ID != "") %>% 
+  separate(LatLong , c('y','x'), sep = ",") %>% 
+  mutate(across(c(x,y), as.numeric)) %>% 
+  mutate(Datum = as.POSIXct(strptime(Datetime_local, "%d-%m-%Y %H:%M:%S"))) %>% 
+  mutate(Bever_ID = as.integer(Bever_ID)) %>% 
+  select(-c(Datetime_UTC, Datetime_local)) %>% 
+  left_join(BeverIDs[,c("bever", "VHF.kort")], by = c("Bever_ID" = "VHF.kort")) %>% 
+  mutate(getSunlightTimes(date=as.Date(Datum), lat=as.numeric(mean(y)),
+                                    lon=as.numeric(mean(x)),tz="CET")[6:7]) %>% 
+  mutate(across(c(Datum,sunrise,sunset)), Tijdstip = ifelse(Datum>sunrise+5200 & Datum<sunset-5200, "Dag", "Nacht"))
+  
+```
+
+```{r kaartjes Telemetrie, echo=FALSE}
+TelemetrieMap <- Telemetrie %>% 
+  filter(y<51.13 & y>51.11) %>% 
+  filter(Tijdstip=="Dag")
+
+pal <- colorFactor(
+  palette = c('blue','green','red','orange'),
+  domain = TelemetrieMap$bever
+)
+
+leaflet(data=TelemetrieMap) %>% 
+  addTiles() %>% 
+  addCircleMarkers(~x,~y, color=~pal(bever),stroke = F, radius=5, fillOpacity = 0.8) %>% 
+  addLegend("bottomright", pal = pal, values = ~bever,
+    title = "Bever",
+    opacity = 1)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
