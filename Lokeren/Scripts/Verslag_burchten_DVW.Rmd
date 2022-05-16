@@ -3,8 +3,8 @@ title: "Burchtlocaties_DVW"
 author: "Frank Huysentruyt"
 date: "13-5-2022"
 output:
-  html_document:
-    df_print: paged
+  pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -12,13 +12,14 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(leaflet)
 library(suncalc)
+library(geosphere)
 ```
 
 # Locaties burchten en dagrustplaatsen
 
 In dit document...
 
-```{r data inlezen MyMaps, include=FALSE}
+```{r data inlezen MyMaps, echo = FALSE, warning = FALSE}
 BeverIDs <- read.csv("../Input/Bevers_Lokeren.csv")
 
 fileNames <- Sys.glob("../Input/MyMaps/*.csv")
@@ -62,7 +63,7 @@ Sporen <- Sporen %>%
 
 ``` 
 
-```{r cars}
+```{r kaart burchten, echo = FALSE, warning = FALSE}
 # selectie van visueel herkende burchten binnen het gebied
 Burchtenmap <- Sporen %>% 
   filter(Status != 'Mortality') %>% 
@@ -73,17 +74,14 @@ Burchtenmap <- Sporen %>%
 leaflet(data=Burchtenmap) %>% 
   addTiles() %>% 
   addCircleMarkers(~x,~y, color = 'darkgreen' , stroke = F, radius = 7, fillOpacity = 0.8) %>% 
-  addLegend("bottomright", colors = 'dakgreen' , labels = 'burchten', 
-            title = "Spoortypes",
-            opacity = 1)
+  addLegend("bottomright", colors = 'dakgreen' , labels = 'burchten', title = "Spoortypes", opacity = 1)
 ```
 
 ## Including Plots
 
 You can also embed plots, for example:
 
-```{r telemetrie, echo=FALSE}
-
+```{r telemetrie, echo = FALSE, warning = FALSE}
 Telemetrie <- read.csv("../Input/Telemetrie/Telemetrie.csv") %>% 
   filter(ID != "") %>% 
   separate(LatLong , c('y','x'), sep = ",") %>% 
@@ -98,11 +96,22 @@ Telemetrie <- read.csv("../Input/Telemetrie/Telemetrie.csv") %>%
   
 ```
 
-```{r kaartjes Telemetrie, echo=FALSE}
+```{r kaartjes Telemetrie, echo = FALSE, warning = FALSE}
 TelemetrieMap <- Telemetrie %>% 
   filter(y<51.13 & y>51.11) %>% 
   filter(Tijdstip=="Dag")
 
+#punten binnen de 10m van elkaar clusteren
+allepunten <- SpatialPoints(data.frame("x" = TelemetrieMap[,4],
+                                       "y" = TelemetrieMap[,3]),
+                            proj4string = CRS("+init=epsg:4326"))
+hc <- hclust(as.dist(distm(allepunten)), method="complete")
+TelemetrieMap$clust <- factor(cutree(hc, h=10))
+
+TMBurchten <- TelemetrieMap[,c(3:4,11)] %>% 
+  group_by(clust) %>% 
+  summarise(x = mean(x), y = mean(y))
+  
 pal <- colorFactor(
   palette = c('blue','green','red','orange'),
   domain = TelemetrieMap$bever
@@ -116,4 +125,14 @@ leaflet(data=TelemetrieMap) %>%
     opacity = 1)
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+```{r geïntegreerde kaart, echo = FALSE, warning = FALSE}
+leaflet(data = TMBurchten) %>% 
+  addTiles() %>% 
+  addCircleMarkers(~x,~y, color = 'blue', stroke = F, radius=5, fillOpacity = 0.8) %>% 
+  addCircleMarkers(data = Burchtenmap, ~x,~y, color = 'red', stroke = F, radius=5, fillOpacity = 0.8) %>% 
+  addLegend("bottomright", colors = c('blue','red'), labels = c('dagrustplaatsen','zichtbare burchten'), 
+            title = "Potentiële burchten/holen",
+            opacity = 1)
+```
+```

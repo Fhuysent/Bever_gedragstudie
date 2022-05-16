@@ -11,6 +11,7 @@ library(tidyverse)
 library(leaflet)
 library(lubridate)
 library(inborutils)
+library(rgeos)
 ```
 
 ## Inlezen Gegevens
