@@ -1,5 +1,5 @@
 ---
-title: "Locatiegegevens van gekende burchten en holen langs de Durme (segment N70 - Daknambrug)"
+title: "Locatiegegevens van gekende burchten en holen van bevers langs de Durme (segment N70 - Daknambrug)"
 author: "Frank Huysentruyt"
 date: "18-5-2022"
 output:
