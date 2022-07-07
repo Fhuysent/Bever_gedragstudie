@@ -12,6 +12,7 @@ library(leaflet)
 library(lubridate)
 library(inborutils)
 library(rgeos)
+library(googlesheets4)
 ```
 
 ## Inlezen Gegevens
