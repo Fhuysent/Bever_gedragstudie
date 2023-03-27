@@ -11,6 +11,13 @@ library(tidyverse)
 library(leaflet)
 library(lubridate)
 library(inborutils)
+library(rgeos)
+library(googlesheets4)
+library(adehabitatHR)
+
+#Grids definieren
+BEL <- "+init=epsg:31370"
+WGS84 <- "+init=epsg:4326"
 ```
 
 ## Inlezen Gegevens
@@ -55,7 +62,7 @@ AKOdet$Date <- as.POSIXlt(AKOdet$Date)
 not_all_na <- function(x) any(!is.na(x))
 AKOdata <- AKOdet %>% 
   inner_join(AKOdep, by = c("Receiver"="receiver")) %>% 
-  select(where(not_all_na)) %>% 
+  dplyr::select(where(not_all_na)) %>% 
   filter(Date>deployDateTime & Date<recoverDateTime) %>% 
   left_join(BeverIDs[,c("bever", "Akoestisch")], by = c("Transmitter" = "Akoestisch"))
 remove(not_all_na)
@@ -70,7 +77,7 @@ for (Station in AKOdep$stationName) {
     tmp2 <- filter(tmp, deployDateTime == Start) %>% 
     mutate(start = as.Date(deployDateTime),
            stop = as.Date(recoverDateTime)) %>% 
-    select(receiver, start, stop, deployLat, deployLong)
+    dplyr::select(receiver, start, stop, deployLat, deployLong)
     
     tmp2 <- expand.grid(receiver = tmp2$receiver,
                         station = Station,
@@ -145,7 +152,7 @@ Kooien <- Kooien %>%
 
 Sporen <- Sporen %>%
   filter(!is.na(x)) %>% 
-  select(-description) %>% 
+  dplyr::select(-description) %>% 
   mutate(Datum = Googletime(Datum)) %>% 
   mutate(Type = str_remove_all(Type, fixed("Â"))) %>% 
   mutate(Status = str_remove_all(Status, fixed("Â")))
@@ -181,7 +188,8 @@ Telemetrie <- read.csv("../Input/Telemetrie/Telemetrie.csv") %>%
   separate(LatLong , c('y','x'), sep = ",") %>% 
   mutate(across(c(x,y), as.numeric)) %>% 
   mutate(Datum = as.POSIXct(strptime(Datetime_local, "%d-%m-%Y %H:%M:%S"))) %>% 
-  select(-c(Datetime_UTC, Datetime_local)) %>% 
+  mutate(Bever_ID = as.integer(Bever_ID)) %>% 
+  dplyr::select(-c(Datetime_UTC, Datetime_local)) %>% 
   left_join(BeverIDs[,c("bever", "VHF.kort")], by = c("Bever_ID" = "VHF.kort"))
 ``` 
 
@@ -214,7 +222,7 @@ Wrn_cameras <- read.csv("../Input/Waarnemingen_camera.csv") %>%
   mutate(Datum = as.POSIXct(paste(Datum,Uur))) %>% 
   filter(Datum > Opzet) %>% 
   filter(Datum < Afbraak | Actief == 1) %>% 
-  select(-c(Uur, naam, Slot,Type, Doel))
+  dplyr::select(-c(Uur, naam, Slot,Type, Doel))
 ``` 
 
 ```{r kaartjes Cameravallen, echo=FALSE}
@@ -235,4 +243,129 @@ leaflet(data = Wrn_camerasMap) %>%
   addLegend("bottomright", pal = pal, values = ~Bever_ID,
     title = "Bever",
     opacity = 1)
+```
+
+##Berekeningen MCP
+Hier berekenen we polygonen op basis van 95% van de datapunten, met behulp van MCP.
+
+```{r MCP telemetrie, echo=FALSE}
+HRTelemetrie <- Telemetrie
+coordinates(HRTelemetrie) <- c("x","y")
+proj4string(HRTelemetrie) <- CRS(WGS84)
+
+plotMCP95Telemetrie <- mcp(HRTelemetrie, percent=95, unin = "m", unout = "ha")
+
+leaflet() %>%
+  addTiles() %>% 
+  addPolygons(data=plotMCP95Telemetrie, fillOpacity = 0.6, stroke = F)
+```
+
+```{r MCP Sporen, echo=FALSE}
+HRSporen <- Sporenmap
+coordinates(HRSporen) <- c("x","y")
+proj4string(HRSporen) <- CRS(WGS84)
+
+plotMCP95Sporen <- mcp(HRSporen, percent=95, unin = "m", unout = "ha")
+
+leaflet() %>%
+  addTiles() %>% 
+  addPolygons(data=plotMCP95Sporen, fillOpacity = 0.6, stroke = F)
+```
+```{r MCP AKOdata, echo=FALSE}
+HRAkodata <- AKOdatamap
+coordinates(HRAkodata) <- c("x","y")
+proj4string(HRAkodata) <- CRS(WGS84)
+
+plotMCP95AKOdata <- mcp(HRAkodata, percent=95, unin = "m", unout = "ha")
+
+leaflet() %>%
+  addTiles() %>% 
+  addPolygons(data=plotMCP95AKOdata, fillOpacity = 0.6, stroke = F)
+```
+
+```{r MCP Cameras, echo=FALSE}
+HRCameras <- Cameras
+coordinates(HRCameras) <- c("x","y")
+proj4string(HRCameras) <- CRS(WGS84)
+
+plotMCP95Cameras<- mcp(HRCameras, percent=95, unin = "m", unout = "ha")
+
+leaflet() %>%
+  addTiles() %>% 
+  addPolygons(data=plotMCP95Cameras, fillOpacity = 0.6, stroke = F)
+```
+
+```{r vergelijking polygonen, echo=FALSE}
+
+leaflet() %>%
+  addTiles() %>% 
+  addPolygons(data = plotMCP95Telemetrie, col = "blue", fillOpacity = 0.6, stroke = F) %>% 
+  addPolygons(data = plotMCP95AKOdata, col = "red", fillOpacity = 0.6, stroke = F) %>% 
+  addLegend("bottomright", col = c("blue","red"), labels = c("Telemetrie","Akoestiek"))
+
+leaflet() %>%
+  addTiles() %>% 
+  addPolygons(data = plotMCP95Telemetrie, col = "blue", fillOpacity = 0.6, stroke = F) %>% 
+  addPolygons(data = plotMCP95Sporen, col = "green", fillOpacity = 0.6, stroke = F) %>% 
+  addLegend("bottomright", col = c("blue","green"), labels = c("Telemetrie","Sporen"))
+
+leaflet() %>%
+  addTiles() %>% 
+  addPolygons(data = plotMCP95Telemetrie, col = "blue", fillOpacity = 0.6, stroke = F) %>% 
+  addPolygons(data = plotMCP95Cameras, col = "yellow", fillOpacity = 0.6, stroke = F) %>% 
+  addLegend("bottomright", col = c("blue","yellow"), labels = c("Telemetrie","Cameras"))
+
+leaflet() %>%
+  addTiles() %>% 
+  addPolygons(data = plotMCP95AKOdata, col = "red", fillOpacity = 0.6, stroke = F) %>% 
+  addPolygons(data = plotMCP95Sporen, col = "green", fillOpacity = 0.6, stroke = F) %>% 
+  addLegend("bottomright", col = c("red","green"), labels = c("Akoestiek","Sporen"))
+
+leaflet() %>%
+  addTiles() %>% 
+  addPolygons(data = plotMCP95AKOdata, col = "red", fillOpacity = 0.6, stroke = F) %>% 
+  addPolygons(data = plotMCP95Cameras, col = "yellow", fillOpacity = 0.6, stroke = F) %>% 
+  addLegend("bottomright", col = c("red","yellow"), labels = c("Akoestiek","Cameras"))
+
+leaflet() %>%
+  addTiles() %>% 
+  addPolygons(data = plotMCP95Sporen, col = "green", fillOpacity = 0.6, stroke = F) %>% 
+  addPolygons(data = plotMCP95Cameras, col = "yellow", fillOpacity = 0.6, stroke = F) %>% 
+  addLegend("bottomright", col = c("green","yellow"), labels = c("Sporen","Cameras"))
+
+leaflet() %>%
+  addTiles() %>% 
+  addPolygons(data = plotMCP95Telemetrie, col = "blue", fillOpacity = 0.6, stroke = F) %>% 
+  addPolygons(data = plotMCP95Cameras, col = "yellow", fillOpacity = 0.6, stroke = F) %>%
+  addPolygons(data = plotMCP95Sporen, col = "green", fillOpacity = 0.6, stroke = F) %>%
+  addLegend("bottomright", col = c("blue","yellow","green"), labels = c("Telemetrie","Cameras","Sporen"))
+
+leaflet() %>%
+  addTiles() %>% 
+  addPolygons(data = plotMCP95Telemetrie, col = "blue", fillOpacity = 0.6, stroke = F) %>% 
+  addPolygons(data = plotMCP95AKOdata, col = "red", fillOpacity = 0.6, stroke = F) %>% 
+  addPolygons(data = plotMCP95Sporen, col = "green", fillOpacity = 0.6, stroke = F) %>%
+  addLegend("bottomright", col = c("blue","red","green"), labels = c("Telemetrie","Akoestiek","Sporen"))
+
+leaflet() %>%
+  addTiles() %>% 
+  addPolygons(data = plotMCP95Telemetrie, col = "blue", fillOpacity = 0.6, stroke = F) %>% 
+  addPolygons(data = plotMCP95AKOdata, col = "red", fillOpacity = 0.6, stroke = F) %>% 
+  addPolygons(data = plotMCP95Cameras, col = "yellow", fillOpacity = 0.6, stroke = F) %>%
+  addLegend("bottomright", col = c("blue","red","yellow"), labels = c("Telemetrie","Akoestiek","Cameras"))
+
+leaflet() %>%
+  addTiles() %>% 
+  addPolygons(data = plotMCP95AKOdata, col = "red", fillOpacity = 0.6, stroke = F) %>% 
+  addPolygons(data = plotMCP95Cameras, col = "yellow", fillOpacity = 0.6, stroke = F) %>%
+    addPolygons(data = plotMCP95Sporen, col = "green", fillOpacity = 0.6, stroke = F) %>%
+  addLegend("bottomright", col = c("red","yellow","green"), labels = c("Akoestiek","Cameras","Sporen"))
+
+leaflet() %>%
+  addTiles() %>% 
+  addPolygons(data = plotMCP95Telemetrie, col = "blue", fillOpacity = 0.6, stroke = F) %>%
+  addPolygons(data = plotMCP95AKOdata, col = "red", fillOpacity = 0.6, stroke = F) %>% 
+  addPolygons(data = plotMCP95Cameras, col = "yellow", fillOpacity = 0.6, stroke = F) %>%
+    addPolygons(data = plotMCP95Sporen, col = "green", fillOpacity = 0.6, stroke = F) %>%
+  addLegend("bottomright", col = c("blue","red","yellow","green"), labels = c("Telemetrie","Akoestiek","Cameras","Sporen"))
 ```

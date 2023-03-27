@@ -183,7 +183,7 @@ WKT,name,Datum,description,Type,Status
 "POINT (3.9797248 51.1218925)",Point 182,1646933400000000,zwemmende bever geen litteken geen tag zwom richting tuinen,Waarneming,Actief
 "POINT (3.9797431 51.1166657)",Punt 186,1647108000000000,Zwemmende bever kort rustend op oever ongemerkt geen zichtbare littekens,Waarneming,Actief
 "POINT (3.9794095 51.1219904)",Point 187,1647194400000000,zwemmende bever geen litteken geen tag zwom richting tuinen,Waarneming,Actief
-"POINT (3.9779457 51.1170449)",Point 186,1647126000000000,Burcht,Burcht,Actief
+"POINT (3.9773476 51.1170617)",Point 186,1647126000000000,Burcht,Burcht,Actief
 "POINT (3.9793979 51.1171212)",Point 187,1647640800000000,Rondzwemmend ongemerkte,Waarneming,Actief
 "POINT (3.9797332 51.1193335)",Point 188,1647601200000000,Zwemmende ongezenderde bever,Waarneming,Actief
 "POINT (3.9814499 51.1062014)",Point 189,1647817200000000,Knaagspoor,Knaagspoor,Actief
@@ -216,5 +216,24 @@ WKT,name,Datum,description,Type,Status
 "POINT (3.977925 51.1154304)",Point 216,1651434000000000,Zwemmende bever van rechts naar links ongezenderd,Waarneming,Actief
 "POINT (3.9780277 51.1147638)",Point 217,1651775400000000,Zwemmende bever,Waarneming,Actief
 "POINT (3.979085 51.1162127)",Point 218,1651776900000000,Zwemmende bever,Waarneming,Actief
-"POINT (3.9790889 51.115026)",Point 219,1651777200000000,Grote plons,Waarneming ,Actief
-"POINT (3.9777834 51.1149737)",Point 220,1651777500000000,Geknaag aan voet van boom, bever niet zichtbaar, mogelijks dagrustplaats,Waarneming ,Actief 
+"POINT (3.9777076 51.1152095)",Point 219,1651777200000000,Grote plons,Waarneming,Actief
+"POINT (3.9777834 51.1149737)",Point 220,1651777500000000,Geknaag aan voet van boom, bever niet zichtbaar, mogelijks dagrustplaats,Waarneming,Actief
+"POINT (3.970404 51.1370697)",Punt 220,1652306400000000,vondst 102 na wegtrekken,Burcht,Actief
+"POINT (3.9816866 51.1406084)",Punt 221,1649714400000000,burcht gevonden na zoektocht 101,Burcht,Actief
+"POINT (3.9724712 51.136152)",Point 222,1652726100000000,Zwemmende bever,Waarneming,Actief
+"POINT (3.9714458 51.1367755)",Point 223,1652726700000000,2 bevers etend van wilgentakken die in water hangen,Waarneming,Actief
+"POINT (3.9826447 51.1202266)",Point 224,1652736300000000,2 zwemmende bevers vanuit noordelijke richting,Waarneming,Actief
+"POINT (3.97194 51.1361485)",Point 225,1652811900000000,Zwemmende bever,Waarneming,Actief
+"POINT (3.9757962 51.1166923)",Point 226,1652818080000000,Zwemmende bever,Waarneming,Actief
+"POINT (3.9793404 51.1172184)",Point 227,1652820000000000,Zwemmende bever,Waarneming,Actief
+"POINT (3.9817696 51.1203809)",Point 228,1652821680000000,Zwemmende bever,Waarneming,Actief
+"POINT (3.9790166 51.1223438)",Point 229,1652823840000000,Zwemmende bever,Waarneming,Actief
+"POINT (3.9760591 51.1177255)",Point 230,1653418920000000,Zwemmende bever,Waarneming,Actief
+"POINT (3.9746771 51.116386)",Point 231,1653420000000000,Wissel,Wissel,Actief
+"POINT (3.9747015 51.1163369)",Point 232,1653420300000000,Knagende bever,Waarneming,Actief
+"POINT (3.9752568 51.1169058)",Point 233,1653420840000000,Zwemmende bever met tak,Waarneming,Actief
+"POINT (3.9774873 51.1168355)",Point 234,1653421020000000,Bever stak meer over met jonge wilgen tak waarna hij onderdoor met tak,Waarneming,Actief
+"POINT (3.977956 51.1171024)",Point 235,1653421500000000,Zwemmende bever,Waarneming,Actief
+"POINT (3.9803519 51.1205729)",Point 236,1653854520000000,Zwemmende bever,Waarneming,Actief
+"POINT (3.9750538 51.1345673)",Point 237,1651186740000000,Bever versleept tak naar water, youtube film joris everaert, lokerse moervaartmeersen april-mei,Waarneming,Actief
+"POINT (3.9805963 51.1209943)",Point 238,1654116480000000,Zwemmende bever,Waarneming,Actief

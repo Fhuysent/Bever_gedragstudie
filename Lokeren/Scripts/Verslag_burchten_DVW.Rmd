@@ -1,0 +1,186 @@
+---
+title: "Locatiegegevens van gekende burchten en holen van bevers langs de Durme (segment N70 - Daknambrug)"
+author: "Frank Huysentruyt"
+date: "18-5-2022"
+output:
+  html_document: default
+  pdf_document: 
+    fig_caption: yes
+    fig_crop: no
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(leaflet)
+library(suncalc)
+library(geosphere)
+library(sp)
+```
+
+```{r data inlezen MyMaps, echo = FALSE, warning = FALSE}
+BeverIDs <- read.csv("../Input/Bevers_Lokeren.csv")
+
+fileNames <- Sys.glob("../Input/MyMaps/*.csv")
+
+for (i in fileNames) {
+  assign(
+    unlist(regmatches(i, gregexpr("(?<=MyMaps/).*?(?=\\.csv)", i, perl=T))),
+    read.csv(i, header=TRUE, sep=,) %>% 
+      mutate(WKT = regmatches(WKT, gregexpr("(?<=\\().*?(?=\\))", WKT, perl=T))) %>% 
+      separate(WKT, c('x','y'), sep=" ") %>% 
+      mutate(x = as.numeric(x), y = as.numeric(y))
+  )
+  }
+remove(i, fileNames)
+
+#Opkuisen
+
+#Van Google time (PST sinds 1/1/1970 * 1000000) naar onze tijd
+Googletime <- function(x) {
+  as.POSIXct((as.numeric(x)/1000000)-32400, origin = "1970-01-01")
+}
+
+Bevers <- Bevers %>%
+  mutate(Tijdstip = Googletime(Tijdstip))
+  
+Cameras <- Cameras %>%
+  mutate(Opzet = Googletime(Opzet),
+         Afbraak = Googletime(Afbraak)) %>% 
+  rename(Camera = Nummer)
+    
+Kooien <- Kooien %>%
+  mutate(Opzet = Googletime(Opzet),
+         Afbraak = Googletime(Afbraak))
+
+Sporen <- Sporen %>%
+  filter(!is.na(x)) %>% 
+  select(-description) %>% 
+  mutate(Datum = Googletime(Datum)) %>% 
+  mutate(Type = str_remove_all(Type, fixed("Â"))) %>% 
+  mutate(Status = str_remove_all(Status, fixed("Â")))
+
+``` 
+
+# Aanleiding
+
+Dit document kadert binnen het project "Onderzoek naar de invloed van beheeringrepen op gedrag van bevers" ([INBOPR-17926](https://www.vlaanderen.be/inbo/projecten/onderzoek-naar-de-invloed-van-beheeringrepen-op-gedrag-van-bevers)). Binnen dit project onderzoekt het Instituut voor Natuur- en Bosonderzoek ([INBO](https://www.vlaanderen.be/inbo/)) in opdracht van De Vlaamse Waterweg ([DVW](https://www.vlaamsewaterweg.be/)) en ter voorbereiding van werken aan de westelijke dijk langs de Durme in Lokeren, op die locatie het habitatgebruik van de aanwezige bevers. Het onderzoek gebeurt zowel voorafgaand als volgend op de uit te voeren werken.
+
+Op 4 mei 2022 ontving INBO via e-mail de vraag om een kaart aan te leveren van de locaties van territoria, holen en burchten, zoals op dat moment gekend. Deze info zal de aannemer toelaten rekening te houden met de aanwezigheid van bevers bij de indiening van offertes, rekening houdend met de elementen die hierover in de verscherpte natuurtoets voor dit project staan. 
+
+# Aanpak
+
+De resultaten die hier worden gerapporteerd maken deel uit van de eerste fase van dit onderzoek, die is gestart op `r format(min(Kooien$Opzet), "%d %b %Y")` en loopt tot op vandaag `r format(Sys.Date(), "%d %b %Y")`. Deze fase bestaat uit drie grote onderdelen:
+  
+  - inventariseren van sporen
+  - monitoren met wildcamera's
+  - vangen en opvolgen van individuele bevers
+  
+In een latere, gedetailleerde rapportage zullen deze methoden in detail worden toegelicht. In het kader van deze datavraag verwijzen we naar de methodiek beschreven in [Huysentruyt _et al._ (2020)](https://purews.inbo.be/ws/portalfiles/portal/18065303/Huysentruyt_etal_2020_OnderzoekNaarHetHabitatgebruikVanBeverInRelatieTotSchadebeheer.pdf) (ook [online beschikbaar](https://inbo.github.io/fis-reports/Reports/Beaver%20telemetry/2-materiaal-en-methoden.htm)).
+
+Hieronder bespreken we per deelvraag welke gegevens werden gebruikt voor het beantwoorden ervan.
+
+# Resultaten
+
+## Ligging holen en burchten
+
+### Zichtbare burchten
+
+Voor het bepalen van de ligging van de holen en burchten gebruiken we eerst de resultaten van de sporeninventarisaties. Er werden in de omgeving in totaal `r nrow(Sporen %>% filter(Type != "Waarneming" & Type != " bever niet zichtbaar"))` sporen van bevers gevonden, waarvan `r nrow(Sporen %>% filter(Type != "Waarneming" & Type != " bever niet zichtbaar") %>% filter(y < 51.13 & y > 51.11))` binnen het beoogde segment zelf. `r nrow(Sporen %>% filter(Type == "Burcht") %>% filter(y < 51.13 & y > 51.11))` daarvan waren burchtlocaties.
+
+Figuur 1 toont dat 2 van die locaties gelegen zijn op de westelijke oever van de Durme en dus overlappen met de zone waarbinnen werken zijn gepland.
+
+```{r burchtenkaart, fig.cap = "Fig. 1: Kaart met visueel zichtbare burchtlocaties", echo = FALSE, warning = FALSE}
+# selectie van visueel herkende burchten binnen het gebied
+Burchtenmap <- Sporen %>% 
+  filter(Status != 'Mortality') %>% 
+  filter(Status == 'Actief') %>% 
+  filter(Type == 'Burcht') %>% 
+  filter(y < 51.13 & y > 51.11)
+
+leaflet(data=Burchtenmap) %>% 
+  addTiles() %>% 
+  addCircleMarkers(~x,~y, color = 'darkgreen' , stroke = F, radius = 7, fillOpacity = 0.8) %>% 
+  addLegend("bottomright", colors = 'darkgreen', labels = 'burchten', 
+            title = "Zichtbare sporen",
+            opacity = 0.8)
+```
+
+### Holen waarin bevers overdag rusten
+
+```{r telemetrie, echo = FALSE, warning = FALSE}
+Telemetrie <- read.csv("../Input/Telemetrie/Telemetrie.csv") %>% 
+  filter(ID != "") %>% 
+  separate(LatLong , c('y','x'), sep = ",") %>% 
+  mutate(across(c(x,y), as.numeric)) %>% 
+  mutate(Datum = as.POSIXct(strptime(Datetime_local, "%d-%m-%Y %H:%M:%S"))) %>% 
+  mutate(Bever_ID = as.integer(Bever_ID)) %>% 
+  select(-c(Datetime_UTC, Datetime_local)) %>% 
+  left_join(BeverIDs[,c("bever", "VHF.kort")], by = c("Bever_ID" = "VHF.kort")) %>% 
+  mutate(getSunlightTimes(date=as.Date(Datum), lat=as.numeric(mean(y)),
+                                    lon=as.numeric(mean(x)),tz="CET")[6:7]) %>% 
+  mutate(across(c(Datum,sunrise,sunset)), Tijdstip = ifelse(Datum>sunrise+5200 & Datum<sunset-5200, "Dag", "Nacht"))
+  
+```
+
+Tussen `r  format(min(Kooien$Opzet), "%d %b %Y")` en `r format(max(Kooien$Afbraak), "%d %b %Y")` werden op `r length(unique(Kooien$naam))` locaties vangkooien voor bever geplaatst, samen goed voor een totaal van `r Kooien %>% mutate(duur=round(Afbraak-Opzet,0)) %>% summarize(sum(duur))` vangdagen. Dit leverde in totaal `r length(Bevers$naam[Bevers$Type == 'Vangst'])` gevangen bevers op die met een VHF-zender konden worden uitgerust.
+Tussen `r format(min(Telemetrie$Datum), "%d %b %Y")` en `r format(max(Telemetrie$Datum), "%d %b %Y")` werden gezenderde bevers vervolgens op `r Telemetrie %>% mutate(Dateshort = as.Date(Datum, format = "%d-%m-%Y")) %>% summarize(length(unique(Dateshort)))` verschillende dagen opgespoord en werd hun locatie vastgelegd. Dit leverde `r length(Telemetrie$ID)` waarnemingen op. Wanneer we alle waarnemingen tijdens de actieve uren van bevers hieruit filteren krijgen we een beeld van de locaties waar de dieren overdag rusten, wat zowel duidelijk zichtbare burchten kunnen zijn, als onzichtbare holen in de oever. We hanteren hiervoor een marge van 2 uren voor zonsondergang tot 2 uren na zonsopkomst. Dit leverde `r Telemetrie %>% filter(y<51.13 & y>51.11) %>% filter(Tijdstip=="Dag") %>% summarize(length(ID))` dagwaarnemingen op van bevers binnen het studiegebied. Deze waarnemingen worden per individuele bever weergegeven in figuur 2. 
+
+Daarbij valt op dat een aantal punten geclusterd liggen, maar niet eenduidig op een vaste locatie wijzen. Dit kan een gevolg zijn van onnauwkeurigheid bij het vaststellen van de exacte locatie van een dier dat niet wordt gezien maar enkel via radiosignaal wordt gedetecteerd of van onnauwkeurigheid bij het ingeven van de exacte gps-locatie. Toch kan het ook wijzen op de grootte van de ondergrondse structuur van een burcht of hol zodat in de zones met meerdere waarnemingen best een grote marge van voorzichtigheid wordt gehanteerd. Om hiervoor te corrigeren groepeerden we in figuur 3 alle telemetriewaarnemingen die binnen 10m van elkaar verwijderd lagen op 1 punt. 
+
+Op figuur 2 wordt duidelijk dat er in de geviseerde oever 3 grote clusters van waarnemingen zijn. Twee daarvan  overlappen na groepering met visueel zichtbare burchten zoals hierboven beschreven (zie ook figuur 3), maar de meest zuidelijke cluster toont de de aanwezigheid van een bijkomend hol, dan niet van buitenaf zichtbaar is. Op die locatie lopen de waarnemingen zelfs na groepering nogal uiteen zodat daar best rekening wordt gehouden met de mogelijkheid van een breed vertakte structuur. 
+
+```{r kaartjes Telemetrie, fig.cap = "Fig. 2: Kaart met via telemetrie overdag vastgestelde locaties van bevers.", echo = FALSE, warning = FALSE}
+TelemetrieMap <- Telemetrie %>% 
+  filter(y<51.13 & y>51.11) %>% 
+  filter(Tijdstip=="Dag")
+
+#punten binnen de 10m van elkaar clusteren
+allepunten <- SpatialPoints(data.frame("x" = TelemetrieMap[,4],
+                                       "y" = TelemetrieMap[,3]),
+                            proj4string = CRS("+init=epsg:4326"))
+
+hc <- hclust(as.dist(distm(allepunten)), method="complete")
+TelemetrieMap$clust <- factor(cutree(hc, h=10))
+
+TMBurchten <- TelemetrieMap[,c(3:4,11)] %>% 
+  group_by(clust) %>% 
+  summarise(x = mean(x), y = mean(y))
+  
+pal <- colorFactor(
+  palette = c('blue','green','red','orange'),
+  domain = TelemetrieMap$bever
+)
+
+leaflet(data=TelemetrieMap) %>% 
+  addTiles() %>% 
+  addCircleMarkers(~x,~y, color=~pal(bever),stroke = F, radius=5, fillOpacity = 0.8) %>% 
+  addLegend("bottomright", pal = pal, values = ~bever,
+    title = "Bever",
+    opacity = 1)
+```
+
+```{r geïntegreerde kaart, fig.cap="Fig. 3: Vergelijking tussen visueel zichtbare burchten en via telemetrie overdag gevonden beves", echo = FALSE, warning = FALSE}
+leaflet(data = TMBurchten) %>% 
+  addTiles() %>% 
+  addCircleMarkers(~x,~y, color = 'blue', stroke = F, radius=5, fillOpacity = 0.8) %>% 
+  addCircleMarkers(data = Burchtenmap, ~x,~y, color = 'red', stroke = F, radius=5, fillOpacity = 0.8) %>% 
+  addLegend("bottomright", colors = c('blue','red'), labels = c('gegroepeerde observaties overdag','zichtbare burchten'), 
+            title = "Potentiële burchten/holen",
+            opacity = 1)
+```
+## Ligging territoria
+
+Uit figuur 2 werd al duidelijk dat de verschillende dieren zich in verschillende territoria ophouden. Een aantal dieren leeft in het noordelijk deel van de zone waarin werken zijn gepland, een aantal blijft zuidelijk. Uit aanvullende gegevens van akoestische bakens waarmee we passage van gezenderde bevers kunnen detecteren blijkt dit ook. Daarnaast liet monitoring met cameravallen ons ook toe de activiteit van een aantal niet gezenderde bevers, die wel individueel herkenbaar zijn door opvallende staartlittekens in kaart te brengen en ook daar blijkt de scheiding in twee territoria nogal strikt. 
+
+Het zuidelijk territorium strekt zich uit van de Durme ter hoogte van de Veerstraat in het zuiden tot de hoefijzervormige bocht in de Durme ter hoogte van het einde van de Heilige Geestmolenstraat in het noorden en omvat ook het volledige zeilmeer en omliggende waterelementen.
+
+Het noordelijk territorium sluit in het zuiden direct aan op het eerste territorium maar de noordelijke grens is minder eenduidig. Hoewel de activiteit van de daar aanwezige familie initieel zeer hoog was binnen het studiegebied is deze recent sterk afgenomen. Bever BE1123 heeft zich sinds eind april zelfs verplaatst naar het deel van de Zuidlede dat zich net voor de samenvloeiing met de Durme bevindt, een zone die zich ruim buiten het studiegebied bevindt. Vermoedelijk strekt dit territorium zich dus veel verder uit dan het zuidelijk territorium, waar, door de beschikbaarheid van het zeilmeer veel meer oeverlengte op een beperkte oppervlakte beschikbaar is.
+
+# Conclusies
+
+In het gebied waarbinnen de werken worden gepland komen twee beverterritoria voor. In het zuidelijk deel bezet de daar aanwezige familie met zekerheid minstens twee holen in de geviseerde dijk. Het meest zuidelijke van deze twee holen is van buitenaf niet zichtbaar en wellicht breed vertakt in de oever. In het noordelijk deel van het gebied (ten noorden van de hoefijzerbocht) leeft een andere beverfamilie, waarvan het territorium zich wel ook noordelijker dan de zone van de geplande werken uitstrekt. In dit territorium is minstens 1 burcht aanwezig in de geviseerde oever, maar deze is ook van buitenaf zichtbaar. 
+
+Omdat in het zuidelijk deel ook burchten aanwezig zijn op het zeilmeer en in het noordelijk deel het territorium zich verder uitstrekt dan de zone van de geplande werken lijkt het erop dat er voldoende uitwijkmogelijkheden binnen de territoria zijn voor de aanwezige bevers. Wanneer de burchten tijdens de werken worden verstoord kan het dus volstaan eventuele aanwezige bevers direct naar een rustiger zone binnen het territorium te verplaatsen. INBO kan hiervoor instaan en kan op dat moment ook de kans nemen om deze dieren van een zender te voorzien om hun gedrag in de periode volgend op deze ingreep gedetailleerd op te volgen.
+
+Finaal willen we wel nog waarschuwen dat niet alle aanwezige bevers konden worden gevangen en dat het dus ook mogelijk is dat de overige bevers bijkomende, niet van buitenaf zichtbare, holen in de dijk kunnen bezetten. Het is daarom aan te raden dat graafwerken ook buiten gekende locaties van burchten/holen met de nodige waakzaamheid worden uitgevoerd.
