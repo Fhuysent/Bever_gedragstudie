@@ -34,7 +34,8 @@ De gegevens van de verschillende databronnen worden als volgt gecompileerd:
 Overige databestanden bevatten gegevens over deployments van akoestische receivers, camera's en kooien.
 
 ```{r data inlezen Bevers, include=FALSE}
-BeverIDs <- read.csv("../Input/Bevers_Lokeren.csv")
+BeverIDs <- read.csv2("../Input/Bevers_Lokeren.csv") %>%
+  mutate(Einddatum = strptime(Eind.VHF, "%d/%m/%Y"))
 
 ```
 
@@ -187,24 +188,30 @@ Telemetrie <- read.csv("../Input/Telemetrie/Telemetrie.csv") %>%
   filter(ID != "") %>% 
   separate(LatLong , c('y','x'), sep = ",") %>% 
   mutate(across(c(x,y), as.numeric)) %>% 
-  mutate(Datum = as.POSIXct(strptime(Datetime_local, "%d-%m-%Y %H:%M:%S"))) %>% 
-  mutate(Bever_ID = as.integer(Bever_ID)) %>% 
+  mutate(Datum = as.POSIXct(strptime(Datetime_local, "%d-%m-%Y %H:%M:%S"))) %>%
+#  mutate(Bever_ID = as.integer(Bever_ID)) %>% 
   dplyr::select(-c(Datetime_UTC, Datetime_local)) %>% 
-  left_join(BeverIDs[,c("bever", "VHF.kort")], by = c("Bever_ID" = "VHF.kort"))
+  left_join(BeverIDs[,c("bever", "VHF.kort","Einddatum")], by = c("Bever_ID" = "VHF.kort")) %>% 
+  mutate(Einddatum = if_else(is.na(Einddatum), Sys.Date(), Einddatum)) %>% 
+  filter(Datum<Einddatum)
+
 ``` 
 
 ```{r kaartjes Telemetrie, echo=FALSE}
 TelemetrieMap <- Telemetrie %>% 
-  filter(y<51.13 & y>51.11)
+ filter(y<51.13 & y>51.11) %>% 
+  filter(year(Datum)==2023) %>% 
+  filter(bever %in% c('BE1130','BE1131'))
 
 pal <- colorFactor(
-  palette = c('blue','green','red','orange'),
+  palette = c('blue','green','red','orange','yellow'),
   domain = TelemetrieMap$bever
 )
 
 leaflet(data=TelemetrieMap) %>% 
-  addTiles() %>% 
-  addCircleMarkers(~x,~y, color=~pal(bever),stroke = F, radius=5, fillOpacity = 0.8) %>% 
+  addTiles() %>%
+  addCircleMarkers(~x,~y,
+                   color=~pal(bever),stroke = F, radius=5, fillOpacity = 0.8) %>% 
   addLegend("bottomright", pal = pal, values = ~bever,
     title = "Bever",
     opacity = 1)
