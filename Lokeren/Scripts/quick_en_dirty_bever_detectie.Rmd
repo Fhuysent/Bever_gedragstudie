@@ -4,8 +4,10 @@ library(tidyverse)
 ```
 
 ```{r read data}
-rteu_54_database <- untar("./Lokeren/Input/Masten/2024-02-28_14-58-53_rteu-54.db.tar.gz", 
-                          list = TRUE)
+untar(tarfile = "./Lokeren/Input/Masten/2024-02-28_14-58-53_rteu-54.db.tar.gz",
+      exdir = "./Lokeren/Input/Masten/")
+
+rteu_54_database <- "./Lokeren/Input/Masten/2024-02-28_14-58-53_rteu-54.db"
 
 rteu_53_database <- "./Lokeren/Input/Masten/2024-02-28_16-51-30_rteu-53.db"
 
