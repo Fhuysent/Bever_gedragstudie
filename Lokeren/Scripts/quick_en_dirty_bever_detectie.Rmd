@@ -7,38 +7,61 @@ library(tidyverse)
 rteu_54_database <- untar("./Lokeren/Input/Masten/2024-02-28_14-58-53_rteu-54.db.tar.gz", 
                           list = TRUE)
 
-con <- dbConnect(RSQLite::SQLite(), rteu_54_database)
+rteu_53_database <- "./Lokeren/Input/Masten/2024-02-28_16-51-30_rteu-53.db"
 
-tables <- dbListTables(con)
+con_54 <- dbConnect(RSQLite::SQLite(), rteu_54_database)
 
-rawdata <- dbGetQuery(con, "SELECT * FROM signals")
+tables <- dbListTables(con_54)
+
+rawdata_54 <- dbGetQuery(con_54, "SELECT * FROM signals")
+
+con_53 <- dbConnect(RSQLite::SQLite(), rteu_53_database)
+
+tables <- dbListTables(con_53)
+
+rawdata_53 <- dbGetQuery(con_53, "SELECT * FROM signals")
 ```
 
 ```{r filter data}
-freqs <- c(151050, 151150)
+freqs <- c(151050, 151150, 151131)
 
 for(f in freqs){
   
   f_min <- f-2
   f_max <- f+2
+  signal_bw_limit <- 10
   
-  filtered_data <- rawdata %>% 
-    filter(signal_freq >= f_min & signal_freq <= f_max) %>% 
+  filtered_data_54 <- rawdata_54 %>% 
+    filter(signal_freq >= f_min & signal_freq <= f_max,
+           signal_bw < signal_bw_limit) %>% 
     mutate(datetime = parse_datetime(timestamp),
            time = format(datetime, "%H:%M"),
-           hour = hour(datetime))
+           hour = hour(datetime),
+           mast = "rteu-54")
   
-  summary(as.Date(filtered_data$timestamp))
+  filtered_data_53 <- rawdata_53 %>% 
+    filter(signal_freq >= f_min & signal_freq <= f_max,
+           signal_bw < signal_bw_limit) %>% 
+    mutate(datetime = parse_datetime(timestamp),
+           time = format(datetime, "%H:%M"),
+           hour = hour(datetime),
+           mast = "rteu-53")
+  
+  filtered_data <- rbind(filtered_data_53, filtered_data_54)
   
   assign(paste0("d_", f), filtered_data)
 }
 ```
 
 ```{r}
+table(d_151050$mast)
+table(d_151150$mast)
+
 summary(as.Date(d_151050$timestamp))
 table(as.Date(d_151050$timestamp))
 summary(as.Date(d_151150$timestamp))
-table(as.Date(d_151150$timestamp))
+table(as.Date(d_151150$timestamp), d_151150$mast)
+table(as.Date(d_151131$timestamp), d_151131$mast)
 
 ggplot(d_151050, aes(x = time)) +
   geom_histogram(stat = "count")
@@ -52,7 +75,18 @@ ggplot(d_151150, aes(x = time)) +
 ggplot(d_151150, aes(x = hour)) +
   geom_histogram(stat = "count")
 
+ggplot(d_151131, aes(x = hour)) +
+  geom_histogram(stat = "count")
+
+ggplot(d_151150, aes(x = as.Date(timestamp), fill = mast)) +
+  geom_histogram(stat = "count")
+
+ggplot(d_151131, aes(x = as.Date(timestamp), fill = mast)) +
+  geom_histogram(stat = "count")
+
 table(d_151050$max_signal)
 table(d_151150$max_signal)
+
+summary(d_151150$signal_bw)
 ```
 
