@@ -51,5 +51,8 @@ ggplot(d_151150, aes(x = time)) +
 
 ggplot(d_151150, aes(x = hour)) +
   geom_histogram(stat = "count")
+
+table(d_151050$max_signal)
+table(d_151150$max_signal)
 ```
 
