@@ -3,6 +3,9 @@ title: "Data"
 author: "Frank Huysentruyt"
 date: "21-4-2022"
 output: html_document
+editor_options: 
+  markdown: 
+    wrap: 72
 ---
 
 ```{r setup, include=FALSE}
@@ -22,19 +25,26 @@ WGS84 <- "+init=epsg:4326"
 
 ## Inlezen Gegevens
 
-In het project werden een aantal bevers gezenderd en via telemetrie opgevolgd. Elk van deze bevers kreeg daarbij zowel een VHF als Akoestische zender. De VHF zenders leveren manuele locatiebepalingen met behulp van antennes op, akoestische zenders leveren automatische locaties op ter hoogte van vaste receivers.
+In het project werden een aantal bevers gezenderd en via telemetrie
+opgevolgd. Elk van deze bevers kreeg daarbij zowel een VHF als
+Akoestische zender. De VHF zenders leveren manuele locatiebepalingen met
+behulp van antennes op, akoestische zenders leveren automatische
+locaties op ter hoogte van vaste receivers.
 
-De gegevens van de verschillende databronnen worden als volgt gecompileerd:
-  - *Bevers*: identificatiegegevens van de gevangen en gezenderde bevers
-  - *Sporen*: gegevens van sporeninventarisaties
-  - *AKOdata*: gegevens akoestische receivers uit csv-bestanden met deployments en met detecties
-  - *Telemetrie*: gegevens van VHF detecties
-  - *Wrn_cameras*: gegevens van detecties van bevers via cameras
-  
-Overige databestanden bevatten gegevens over deployments van akoestische receivers, camera's en kooien.
+De gegevens van de verschillende databronnen worden als volgt
+gecompileerd: - *Bevers*: identificatiegegevens van de gevangen en
+gezenderde bevers - *Sporen*: gegevens van sporeninventarisaties -
+*AKOdata*: gegevens akoestische receivers uit csv-bestanden met
+deployments en met detecties - *Telemetrie*: gegevens van VHF
+detecties - *Wrn_cameras*: gegevens van detecties van bevers via cameras
+
+Overige databestanden bevatten gegevens over deployments van akoestische
+receivers, camera's en kooien.
 
 ```{r data inlezen Bevers, include=FALSE}
-BeverIDs <- read.csv("../Input/Bevers_Lokeren.csv")
+BeverIDs <- read.csv2("../Input/Bevers_Lokeren.csv") %>%
+  mutate(Einddatum = strptime(Eind.VHF, "%d/%m/%Y")) %>% 
+  mutate(Startdatum = strptime(datum, "%d/%m/%Y")) 
 
 ```
 
@@ -93,7 +103,11 @@ remove(Station, Start, tmp, tmp2)
 ```
 
 ## Akoestische data
-Dit zijn detecties die zijn uitgelezen per receiver. Alle detecties zijn te koppelen aan de geografische locatie van deze receiver op dat moment. De receivers worden gebruikt om de grenzen van de territoria te controleren.
+
+Dit zijn detecties die zijn uitgelezen per receiver. Alle detecties zijn
+te koppelen aan de geografische locatie van deze receiver op dat moment.
+De receivers worden gebruikt om de grenzen van de territoria te
+controleren.
 
 ```{r akoestiek, echo=FALSE, message=FALSE}
 AKOdata$Dateshort <- as.Date(AKOdata$Date)
@@ -110,12 +124,15 @@ leaflet(data=AKOdep_all) %>%
   addTiles() %>% 
   addCircleMarkers(~x,~y)
 ```
+
 ## MyMapsdata
-Deze gegevens zijn de geografische locaties zoals ingegegeven via Google MyMaps. Er zijn 4 verschillende datalagen:
-  - *Bevers*: het moment en de locatie waarop bevers werden gevangen en gezenderd
-  - *Cameras*: het tijdsinterval en de locaties van cameraval-deployments
-  - *Kooien*: het tijdsinterval en de locaties van vangkooi-deployments
-  - *Sporen*: de locatie van verschillende spoortypes, zowel oud als nieuw
+
+Deze gegevens zijn de geografische locaties zoals ingegegeven via Google
+MyMaps. Er zijn 4 verschillende datalagen: - *Bevers*: het moment en de
+locatie waarop bevers werden gevangen en gezenderd - *Cameras*: het
+tijdsinterval en de locaties van cameraval-deployments - *Kooien*: het
+tijdsinterval en de locaties van vangkooi-deployments - *Sporen*: de
+locatie van verschillende spoortypes, zowel oud als nieuw
 
 ```{r data inlezen MyMaps, include=FALSE}
 fileNames <- Sys.glob("../Input/MyMaps/*.csv")
@@ -157,7 +174,7 @@ Sporen <- Sporen %>%
   mutate(Type = str_remove_all(Type, fixed("Â"))) %>% 
   mutate(Status = str_remove_all(Status, fixed("Â")))
 
-``` 
+```
 
 ```{r kaartjes MyMaps, echo=FALSE}
 # selectie van enkel actieve sporen binnen studiegebied
@@ -180,38 +197,52 @@ leaflet(data=Sporenmap) %>%
 ```
 
 ## Telemetrie
-Hier worden de gegevens ingelezen die via AppSheet worden verzameld. De data wordt vanuit de app weggeschreven naar een databank op de projectdrive. De download van die gegevens wordt als .csv onder de input map geplaatst met als naam 'Telemetrie'.
+
+Hier worden de gegevens ingelezen die via AppSheet worden verzameld. De
+data wordt vanuit de app weggeschreven naar een databank op de
+projectdrive. De download van die gegevens wordt als .csv onder de input
+map geplaatst met als naam 'Telemetrie'.
 
 ```{r data inlezen Telemetrie, include=FALSE}
 Telemetrie <- read.csv("../Input/Telemetrie/Telemetrie.csv") %>% 
   filter(ID != "") %>% 
   separate(LatLong , c('y','x'), sep = ",") %>% 
   mutate(across(c(x,y), as.numeric)) %>% 
-  mutate(Datum = as.POSIXct(strptime(Datetime_local, "%d-%m-%Y %H:%M:%S"))) %>% 
-  mutate(Bever_ID = as.integer(Bever_ID)) %>% 
+  mutate(Datum = as.POSIXct(strptime(Datetime_local, "%d-%m-%Y %H:%M:%S"))) %>%
+#  mutate(Bever_ID = as.integer(Bever_ID)) %>% 
   dplyr::select(-c(Datetime_UTC, Datetime_local)) %>% 
-  left_join(BeverIDs[,c("bever", "VHF.kort")], by = c("Bever_ID" = "VHF.kort"))
-``` 
+  left_join(BeverIDs[,c("bever", "VHF.kort","Startdatum","Einddatum")], by = c("Bever_ID" = "VHF.kort")) %>% 
+  mutate(Einddatum = if_else(is.na(Einddatum), Sys.Date(), Einddatum)) %>%
+  filter(Datum<Einddatum & Datum>=Startdatum)
+
+```
 
 ```{r kaartjes Telemetrie, echo=FALSE}
 TelemetrieMap <- Telemetrie %>% 
-  filter(y<51.13 & y>51.11)
+# filter(y<51.13 & y>51.11) %>% 
+  filter(year(Datum)==2023)
 
 pal <- colorFactor(
-  palette = c('blue','green','red','orange'),
+  palette = c('blue','green','red','orange','yellow'),
   domain = TelemetrieMap$bever
 )
 
 leaflet(data=TelemetrieMap) %>% 
-  addTiles() %>% 
-  addCircleMarkers(~x,~y, color=~pal(bever),stroke = F, radius=5, fillOpacity = 0.8) %>% 
+  addTiles() %>%
+  addCircleMarkers(~x,~y,
+                   color=~pal(bever),stroke = F, radius=5, fillOpacity = 0.9) %>% 
   addLegend("bottomright", pal = pal, values = ~bever,
     title = "Bever",
     opacity = 1)
 ```
 
 ## Waarnemingen camera's
-Hier worden de gegevens ingelezen van bevers die individueel konden worden herkend op cameravallen. De bevers kunnen ofwel worden gelinkt aan gekende bevers met volgnummer of zijn individueel herkenbaar door opvallende kenmerken. Ook de gemerkte maar niet afzonderlijke herkenbare dieren zitten in deze dataset.
+
+Hier worden de gegevens ingelezen van bevers die individueel konden
+worden herkend op cameravallen. De bevers kunnen ofwel worden gelinkt
+aan gekende bevers met volgnummer of zijn individueel herkenbaar door
+opvallende kenmerken. Ook de gemerkte maar niet afzonderlijke herkenbare
+dieren zitten in deze dataset.
 
 ```{r data inlezen Cameravallen, include=FALSE}
 Wrn_cameras <- read.csv("../Input/Waarnemingen_camera.csv") %>% 
@@ -223,7 +254,7 @@ Wrn_cameras <- read.csv("../Input/Waarnemingen_camera.csv") %>%
   filter(Datum > Opzet) %>% 
   filter(Datum < Afbraak | Actief == 1) %>% 
   dplyr::select(-c(Uur, naam, Slot,Type, Doel))
-``` 
+```
 
 ```{r kaartjes Cameravallen, echo=FALSE}
 # selectie van enkel actieve sporen binnen studiegebied
@@ -245,8 +276,8 @@ leaflet(data = Wrn_camerasMap) %>%
     opacity = 1)
 ```
 
-##Berekeningen MCP
-Hier berekenen we polygonen op basis van 95% van de datapunten, met behulp van MCP.
+##Berekeningen MCP Hier berekenen we polygonen op basis van 95% van de
+datapunten, met behulp van MCP.
 
 ```{r MCP telemetrie, echo=FALSE}
 HRTelemetrie <- Telemetrie
@@ -271,6 +302,7 @@ leaflet() %>%
   addTiles() %>% 
   addPolygons(data=plotMCP95Sporen, fillOpacity = 0.6, stroke = F)
 ```
+
 ```{r MCP AKOdata, echo=FALSE}
 HRAkodata <- AKOdatamap
 coordinates(HRAkodata) <- c("x","y")

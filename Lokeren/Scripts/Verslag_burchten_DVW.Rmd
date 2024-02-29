@@ -3,10 +3,10 @@ title: "Locatiegegevens van gekende burchten en holen van bevers langs de Durme 
 author: "Frank Huysentruyt"
 date: "18-5-2022"
 output:
-  html_document: default
   pdf_document: 
     fig_caption: yes
     fig_crop: no
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
