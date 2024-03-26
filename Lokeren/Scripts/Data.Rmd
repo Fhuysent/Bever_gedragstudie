@@ -51,6 +51,7 @@ BeverIDs <- read.csv2("../Input/Bevers_Lokeren.csv") %>%
 ```{r data inlezen Akoestiek, include=FALSE}
 #deployments inlezen
 AKOdep <- read.csv("../Input/Akoestiek/Deployments/ETN-deployments.csv", header=TRUE, sep=,)
+
 #alle deployments en recoveries op de middag zetten (misschien nog vervangen door exacte uur)
 AKOdep$deployDateTime <- as.POSIXlt(as.Date(AKOdep$deployDateTime))+43200
 AKOdep$recoverDateTime[AKOdep$recoverDateTime==""] <- as.character(Sys.time())
@@ -59,6 +60,7 @@ AKOdep$recoverDateTime <- as.POSIXlt(as.Date(AKOdep$recoverDateTime))+43200
 #detecties inlezen
 fileNames <- Sys.glob("../Input/Akoestiek/*.csv")
 AKOdet <- NULL
+
 ##samenvoegen gegevens met verwijderen van eventuele dubbels ontstaan door niet wissen tussen uitlezen
 for (fileName in fileNames) {
   AKOdet <- unique(rbind(AKOdet, read.csv(fileName, header=TRUE, sep=,)))
@@ -234,6 +236,27 @@ leaflet(data=TelemetrieMap) %>%
   addLegend("bottomright", pal = pal, values = ~bever,
     title = "Bever",
     opacity = 1)
+```
+
+## GPS
+
+Hier worden de gegevens ingelezen de Lotek PinPoint Host vanaf de GPS zenders worden ingeladen. Deze gegevens zijn beschikbaar als .txt bestanden.
+
+```{r data inlezen GPS, include=FALSE}
+GPS <- read.delim("../Input/GPS/PinPoint 44030 2024-03-25 11-11-14_V8_113_0.txt", header = TRUE, sep ="") %>% 
+  mutate(date = as.Date(RTC.date, format = "%y/%m/%d"))
+
+GPS <- GPS %>% 
+  filter(!is.na(Longitude)) %>% 
+  arrange(date)
+
+```
+
+```{r kaartje GPS, include=FALSE}
+leaflet(data=GPS) %>% 
+  addTiles() %>%
+  addCircleMarkers(~Longitude,~Latitude,stroke = F, radius=5, fillOpacity = 0.9) %>%
+  addPolylines(~Longitude,~Latitude)
 ```
 
 ## Waarnemingen camera's
